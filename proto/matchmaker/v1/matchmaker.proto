@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option go_package = "github.com/tobyrushton/globalfront/pb/matchmaker";
+
+service Matchmaker {
+    rpc GetCurrentGame(GetCurrentGameRequest) returns (GetCurrentGameResponse);
+}
+
+message GetCurrentGameRequest {}
+
+message GetCurrentGameResponse {
+    string name = 1;
+}
