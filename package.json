@@ -1,0 +1,21 @@
+{
+  "name": "globalfront",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "description": "",
+  "workspaces": [
+    "packages/*",
+    "pb"
+  ],
+  "dependencies": {
+    "@grpc/grpc-js": "^1.14.0",
+    "google-protobuf": "^4.0.0"
+  }
+}

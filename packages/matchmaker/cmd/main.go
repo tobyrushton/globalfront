@@ -13,7 +13,7 @@ func main() {
 
 	mm := matchmaker.New()
 
-	lis, err := net.Listen("tcp", ":3000")
+	lis, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatal(err)
 	}

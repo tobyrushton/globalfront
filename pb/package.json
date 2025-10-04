@@ -1,0 +1,21 @@
+{
+  "name": "@globalfront/pb",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "exports": {
+    "./*": "./*"
+  },
+  "description": "",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@types/google-protobuf": "^3.15.12"
+  }
+}
