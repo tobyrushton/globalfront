@@ -4,9 +4,10 @@
 // 	protoc        v6.32.1
 // source: matchmaker/v1/matchmaker.proto
 
-package matchmaker
+package v1
 
 import (
+	v1 "github.com/tobyrushton/globalfront/pb/game/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -59,7 +60,7 @@ func (*GetCurrentGameRequest) Descriptor() ([]byte, []int) {
 
 type GetCurrentGameResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Game          *v1.Game               `protobuf:"bytes,1,opt,name=game,proto3" json:"game,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -94,24 +95,24 @@ func (*GetCurrentGameResponse) Descriptor() ([]byte, []int) {
 	return file_matchmaker_v1_matchmaker_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GetCurrentGameResponse) GetName() string {
+func (x *GetCurrentGameResponse) GetGame() *v1.Game {
 	if x != nil {
-		return x.Name
+		return x.Game
 	}
-	return ""
+	return nil
 }
 
 var File_matchmaker_v1_matchmaker_proto protoreflect.FileDescriptor
 
 const file_matchmaker_v1_matchmaker_proto_rawDesc = "" +
 	"\n" +
-	"\x1ematchmaker/v1/matchmaker.proto\"\x17\n" +
-	"\x15GetCurrentGameRequest\",\n" +
-	"\x16GetCurrentGameResponse\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name2O\n" +
+	"\x1ematchmaker/v1/matchmaker.proto\x12\rmatchmaker.v1\x1a\x12game/v1/game.proto\"\x17\n" +
+	"\x15GetCurrentGameRequest\";\n" +
+	"\x16GetCurrentGameResponse\x12!\n" +
+	"\x04game\x18\x01 \x01(\v2\r.game.v1.GameR\x04game2k\n" +
 	"\n" +
-	"Matchmaker\x12A\n" +
-	"\x0eGetCurrentGame\x12\x16.GetCurrentGameRequest\x1a\x17.GetCurrentGameResponseB2Z0github.com/tobyrushton/globalfront/pb/matchmakerb\x06proto3"
+	"Matchmaker\x12]\n" +
+	"\x0eGetCurrentGame\x12$.matchmaker.v1.GetCurrentGameRequest\x1a%.matchmaker.v1.GetCurrentGameResponseB5Z3github.com/tobyrushton/globalfront/pb/matchmaker/v1b\x06proto3"
 
 var (
 	file_matchmaker_v1_matchmaker_proto_rawDescOnce sync.Once
@@ -127,17 +128,19 @@ func file_matchmaker_v1_matchmaker_proto_rawDescGZIP() []byte {
 
 var file_matchmaker_v1_matchmaker_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_matchmaker_v1_matchmaker_proto_goTypes = []any{
-	(*GetCurrentGameRequest)(nil),  // 0: GetCurrentGameRequest
-	(*GetCurrentGameResponse)(nil), // 1: GetCurrentGameResponse
+	(*GetCurrentGameRequest)(nil),  // 0: matchmaker.v1.GetCurrentGameRequest
+	(*GetCurrentGameResponse)(nil), // 1: matchmaker.v1.GetCurrentGameResponse
+	(*v1.Game)(nil),                // 2: game.v1.Game
 }
 var file_matchmaker_v1_matchmaker_proto_depIdxs = []int32{
-	0, // 0: Matchmaker.GetCurrentGame:input_type -> GetCurrentGameRequest
-	1, // 1: Matchmaker.GetCurrentGame:output_type -> GetCurrentGameResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	2, // 0: matchmaker.v1.GetCurrentGameResponse.game:type_name -> game.v1.Game
+	0, // 1: matchmaker.v1.Matchmaker.GetCurrentGame:input_type -> matchmaker.v1.GetCurrentGameRequest
+	1, // 2: matchmaker.v1.Matchmaker.GetCurrentGame:output_type -> matchmaker.v1.GetCurrentGameResponse
+	2, // [2:3] is the sub-list for method output_type
+	1, // [1:2] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_matchmaker_v1_matchmaker_proto_init() }

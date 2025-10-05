@@ -3,159 +3,165 @@
  * compiler version: 6.32.1
  * source: matchmaker/v1/matchmaker.proto
  * git: https://github.com/thesayyn/protoc-gen-ts */
+import * as dependency_1 from "./../../game/v1/game";
 import * as pb_1 from "google-protobuf";
 import * as grpc_1 from "@grpc/grpc-js";
-export class GetCurrentGameRequest extends pb_1.Message {
-    #one_of_decls: number[][] = [];
-    constructor(data?: any[] | {}) {
-        super();
-        pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
-        if (!Array.isArray(data) && typeof data == "object") { }
-    }
-    static fromObject(data: {}): GetCurrentGameRequest {
-        const message = new GetCurrentGameRequest({});
-        return message;
-    }
-    toObject() {
-        const data: {} = {};
-        return data;
-    }
-    serialize(): Uint8Array;
-    serialize(w: pb_1.BinaryWriter): void;
-    serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
-        const writer = w || new pb_1.BinaryWriter();
-        if (!w)
-            return writer.getResultBuffer();
-    }
-    static deserialize(bytes: Uint8Array | pb_1.BinaryReader): GetCurrentGameRequest {
-        const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new GetCurrentGameRequest();
-        while (reader.nextField()) {
-            if (reader.isEndGroup())
-                break;
-            switch (reader.getFieldNumber()) {
-                default: reader.skipField();
-            }
+export namespace matchmaker.v1 {
+    export class GetCurrentGameRequest extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {}) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") { }
         }
-        return message;
-    }
-    serializeBinary(): Uint8Array {
-        return this.serialize();
-    }
-    static deserializeBinary(bytes: Uint8Array): GetCurrentGameRequest {
-        return GetCurrentGameRequest.deserialize(bytes);
-    }
-}
-export class GetCurrentGameResponse extends pb_1.Message {
-    #one_of_decls: number[][] = [];
-    constructor(data?: any[] | {
-        name?: string;
-    }) {
-        super();
-        pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
-        if (!Array.isArray(data) && typeof data == "object") {
-            if ("name" in data && data.name != undefined) {
-                this.name = data.name;
-            }
+        static fromObject(data: {}): GetCurrentGameRequest {
+            const message = new GetCurrentGameRequest({});
+            return message;
         }
-    }
-    get name() {
-        return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
-    }
-    set name(value: string) {
-        pb_1.Message.setField(this, 1, value);
-    }
-    static fromObject(data: {
-        name?: string;
-    }): GetCurrentGameResponse {
-        const message = new GetCurrentGameResponse({});
-        if (data.name != null) {
-            message.name = data.name;
+        toObject() {
+            const data: {} = {};
+            return data;
         }
-        return message;
-    }
-    toObject() {
-        const data: {
-            name?: string;
-        } = {};
-        if (this.name != null) {
-            data.name = this.name;
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (!w)
+                return writer.getResultBuffer();
         }
-        return data;
-    }
-    serialize(): Uint8Array;
-    serialize(w: pb_1.BinaryWriter): void;
-    serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
-        const writer = w || new pb_1.BinaryWriter();
-        if (this.name.length)
-            writer.writeString(1, this.name);
-        if (!w)
-            return writer.getResultBuffer();
-    }
-    static deserialize(bytes: Uint8Array | pb_1.BinaryReader): GetCurrentGameResponse {
-        const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new GetCurrentGameResponse();
-        while (reader.nextField()) {
-            if (reader.isEndGroup())
-                break;
-            switch (reader.getFieldNumber()) {
-                case 1:
-                    message.name = reader.readString();
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): GetCurrentGameRequest {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new GetCurrentGameRequest();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
                     break;
-                default: reader.skipField();
+                switch (reader.getFieldNumber()) {
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): GetCurrentGameRequest {
+            return GetCurrentGameRequest.deserialize(bytes);
+        }
+    }
+    export class GetCurrentGameResponse extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            game?: dependency_1.game.v1.Game;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("game" in data && data.game != undefined) {
+                    this.game = data.game;
+                }
             }
         }
-        return message;
-    }
-    serializeBinary(): Uint8Array {
-        return this.serialize();
-    }
-    static deserializeBinary(bytes: Uint8Array): GetCurrentGameResponse {
-        return GetCurrentGameResponse.deserialize(bytes);
-    }
-}
-interface GrpcUnaryServiceInterface<P, R> {
-    (message: P, metadata: grpc_1.Metadata, options: grpc_1.CallOptions, callback: grpc_1.requestCallback<R>): grpc_1.ClientUnaryCall;
-    (message: P, metadata: grpc_1.Metadata, callback: grpc_1.requestCallback<R>): grpc_1.ClientUnaryCall;
-    (message: P, options: grpc_1.CallOptions, callback: grpc_1.requestCallback<R>): grpc_1.ClientUnaryCall;
-    (message: P, callback: grpc_1.requestCallback<R>): grpc_1.ClientUnaryCall;
-}
-interface GrpcStreamServiceInterface<P, R> {
-    (message: P, metadata: grpc_1.Metadata, options?: grpc_1.CallOptions): grpc_1.ClientReadableStream<R>;
-    (message: P, options?: grpc_1.CallOptions): grpc_1.ClientReadableStream<R>;
-}
-interface GrpWritableServiceInterface<P, R> {
-    (metadata: grpc_1.Metadata, options: grpc_1.CallOptions, callback: grpc_1.requestCallback<R>): grpc_1.ClientWritableStream<P>;
-    (metadata: grpc_1.Metadata, callback: grpc_1.requestCallback<R>): grpc_1.ClientWritableStream<P>;
-    (options: grpc_1.CallOptions, callback: grpc_1.requestCallback<R>): grpc_1.ClientWritableStream<P>;
-    (callback: grpc_1.requestCallback<R>): grpc_1.ClientWritableStream<P>;
-}
-interface GrpcChunkServiceInterface<P, R> {
-    (metadata: grpc_1.Metadata, options?: grpc_1.CallOptions): grpc_1.ClientDuplexStream<P, R>;
-    (options?: grpc_1.CallOptions): grpc_1.ClientDuplexStream<P, R>;
-}
-interface GrpcPromiseServiceInterface<P, R> {
-    (message: P, metadata: grpc_1.Metadata, options?: grpc_1.CallOptions): Promise<R>;
-    (message: P, options?: grpc_1.CallOptions): Promise<R>;
-}
-export abstract class UnimplementedMatchmakerService {
-    static definition = {
-        GetCurrentGame: {
-            path: "/Matchmaker/GetCurrentGame",
-            requestStream: false,
-            responseStream: false,
-            requestSerialize: (message: GetCurrentGameRequest) => Buffer.from(message.serialize()),
-            requestDeserialize: (bytes: Buffer) => GetCurrentGameRequest.deserialize(new Uint8Array(bytes)),
-            responseSerialize: (message: GetCurrentGameResponse) => Buffer.from(message.serialize()),
-            responseDeserialize: (bytes: Buffer) => GetCurrentGameResponse.deserialize(new Uint8Array(bytes))
+        get game() {
+            return pb_1.Message.getWrapperField(this, dependency_1.game.v1.Game, 1) as dependency_1.game.v1.Game;
         }
-    };
-    [method: string]: grpc_1.UntypedHandleCall;
-    abstract GetCurrentGame(call: grpc_1.ServerUnaryCall<GetCurrentGameRequest, GetCurrentGameResponse>, callback: grpc_1.sendUnaryData<GetCurrentGameResponse>): void;
-}
-export class MatchmakerClient extends grpc_1.makeGenericClientConstructor(UnimplementedMatchmakerService.definition, "Matchmaker", {}) {
-    constructor(address: string, credentials: grpc_1.ChannelCredentials, options?: Partial<grpc_1.ChannelOptions>) {
-        super(address, credentials, options);
+        set game(value: dependency_1.game.v1.Game) {
+            pb_1.Message.setWrapperField(this, 1, value);
+        }
+        get has_game() {
+            return pb_1.Message.getField(this, 1) != null;
+        }
+        static fromObject(data: {
+            game?: ReturnType<typeof dependency_1.game.v1.Game.prototype.toObject>;
+        }): GetCurrentGameResponse {
+            const message = new GetCurrentGameResponse({});
+            if (data.game != null) {
+                message.game = dependency_1.game.v1.Game.fromObject(data.game);
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                game?: ReturnType<typeof dependency_1.game.v1.Game.prototype.toObject>;
+            } = {};
+            if (this.game != null) {
+                data.game = this.game.toObject();
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.has_game)
+                writer.writeMessage(1, this.game, () => this.game.serialize(writer));
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): GetCurrentGameResponse {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new GetCurrentGameResponse();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        reader.readMessage(message.game, () => message.game = dependency_1.game.v1.Game.deserialize(reader));
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): GetCurrentGameResponse {
+            return GetCurrentGameResponse.deserialize(bytes);
+        }
     }
-    GetCurrentGame: GrpcUnaryServiceInterface<GetCurrentGameRequest, GetCurrentGameResponse> = (message: GetCurrentGameRequest, metadata: grpc_1.Metadata | grpc_1.CallOptions | grpc_1.requestCallback<GetCurrentGameResponse>, options?: grpc_1.CallOptions | grpc_1.requestCallback<GetCurrentGameResponse>, callback?: grpc_1.requestCallback<GetCurrentGameResponse>): grpc_1.ClientUnaryCall => {
-        return super.GetCurrentGame(message, metadata, options, callback);
-    };
+    interface GrpcUnaryServiceInterface<P, R> {
+        (message: P, metadata: grpc_1.Metadata, options: grpc_1.CallOptions, callback: grpc_1.requestCallback<R>): grpc_1.ClientUnaryCall;
+        (message: P, metadata: grpc_1.Metadata, callback: grpc_1.requestCallback<R>): grpc_1.ClientUnaryCall;
+        (message: P, options: grpc_1.CallOptions, callback: grpc_1.requestCallback<R>): grpc_1.ClientUnaryCall;
+        (message: P, callback: grpc_1.requestCallback<R>): grpc_1.ClientUnaryCall;
+    }
+    interface GrpcStreamServiceInterface<P, R> {
+        (message: P, metadata: grpc_1.Metadata, options?: grpc_1.CallOptions): grpc_1.ClientReadableStream<R>;
+        (message: P, options?: grpc_1.CallOptions): grpc_1.ClientReadableStream<R>;
+    }
+    interface GrpWritableServiceInterface<P, R> {
+        (metadata: grpc_1.Metadata, options: grpc_1.CallOptions, callback: grpc_1.requestCallback<R>): grpc_1.ClientWritableStream<P>;
+        (metadata: grpc_1.Metadata, callback: grpc_1.requestCallback<R>): grpc_1.ClientWritableStream<P>;
+        (options: grpc_1.CallOptions, callback: grpc_1.requestCallback<R>): grpc_1.ClientWritableStream<P>;
+        (callback: grpc_1.requestCallback<R>): grpc_1.ClientWritableStream<P>;
+    }
+    interface GrpcChunkServiceInterface<P, R> {
+        (metadata: grpc_1.Metadata, options?: grpc_1.CallOptions): grpc_1.ClientDuplexStream<P, R>;
+        (options?: grpc_1.CallOptions): grpc_1.ClientDuplexStream<P, R>;
+    }
+    interface GrpcPromiseServiceInterface<P, R> {
+        (message: P, metadata: grpc_1.Metadata, options?: grpc_1.CallOptions): Promise<R>;
+        (message: P, options?: grpc_1.CallOptions): Promise<R>;
+    }
+    export abstract class UnimplementedMatchmakerService {
+        static definition = {
+            GetCurrentGame: {
+                path: "/matchmaker.v1.Matchmaker/GetCurrentGame",
+                requestStream: false,
+                responseStream: false,
+                requestSerialize: (message: GetCurrentGameRequest) => Buffer.from(message.serialize()),
+                requestDeserialize: (bytes: Buffer) => GetCurrentGameRequest.deserialize(new Uint8Array(bytes)),
+                responseSerialize: (message: GetCurrentGameResponse) => Buffer.from(message.serialize()),
+                responseDeserialize: (bytes: Buffer) => GetCurrentGameResponse.deserialize(new Uint8Array(bytes))
+            }
+        };
+        [method: string]: grpc_1.UntypedHandleCall;
+        abstract GetCurrentGame(call: grpc_1.ServerUnaryCall<GetCurrentGameRequest, GetCurrentGameResponse>, callback: grpc_1.sendUnaryData<GetCurrentGameResponse>): void;
+    }
+    export class MatchmakerClient extends grpc_1.makeGenericClientConstructor(UnimplementedMatchmakerService.definition, "Matchmaker", {}) {
+        constructor(address: string, credentials: grpc_1.ChannelCredentials, options?: Partial<grpc_1.ChannelOptions>) {
+            super(address, credentials, options);
+        }
+        GetCurrentGame: GrpcUnaryServiceInterface<GetCurrentGameRequest, GetCurrentGameResponse> = (message: GetCurrentGameRequest, metadata: grpc_1.Metadata | grpc_1.CallOptions | grpc_1.requestCallback<GetCurrentGameResponse>, options?: grpc_1.CallOptions | grpc_1.requestCallback<GetCurrentGameResponse>, callback?: grpc_1.requestCallback<GetCurrentGameResponse>): grpc_1.ClientUnaryCall => {
+            return super.GetCurrentGame(message, metadata, options, callback);
+        };
+    }
 }
