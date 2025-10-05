@@ -9,14 +9,16 @@ import (
 )
 
 type GameFactory struct {
-	gameChannel chan *pb.Game
-	newGameChan chan struct{}
+	gameChannel  chan *pb.Game
+	newGameChan  chan struct{}
+	newGameDelay int
 }
 
-func New() *GameFactory {
+func New(newGameDelay int) *GameFactory {
 	gf := &GameFactory{
-		gameChannel: make(chan *pb.Game),
-		newGameChan: make(chan struct{}),
+		gameChannel:  make(chan *pb.Game),
+		newGameChan:  make(chan struct{}),
+		newGameDelay: newGameDelay,
 	}
 	go gf.createGameLoop()
 	return gf
@@ -39,7 +41,7 @@ func (gf *GameFactory) createGameLoop() {
 	for {
 		gf.createGame()
 
-		timer := time.NewTimer(60 * time.Second)
+		timer := time.NewTimer(time.Duration(gf.newGameDelay) * time.Second)
 		select {
 		case <-timer.C:
 			continue

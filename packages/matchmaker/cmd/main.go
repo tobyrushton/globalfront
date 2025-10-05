@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	gf := gamefactory.New()
+	gf := gamefactory.New(60)
 	mm := matchmaker.New(gf)
 
 	lis, err := net.Listen("tcp", ":8080")
