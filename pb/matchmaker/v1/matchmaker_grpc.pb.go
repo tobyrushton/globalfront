@@ -4,7 +4,7 @@
 // - protoc             v6.32.1
 // source: matchmaker/v1/matchmaker.proto
 
-package matchmaker
+package v1
 
 import (
 	context "context"
@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Matchmaker_GetCurrentGame_FullMethodName = "/Matchmaker/GetCurrentGame"
+	Matchmaker_GetCurrentGame_FullMethodName = "/matchmaker.v1.Matchmaker/GetCurrentGame"
 )
 
 // MatchmakerClient is the client API for Matchmaker service.
@@ -108,7 +108,7 @@ func _Matchmaker_GetCurrentGame_Handler(srv interface{}, ctx context.Context, de
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Matchmaker_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "Matchmaker",
+	ServiceName: "matchmaker.v1.Matchmaker",
 	HandlerType: (*MatchmakerServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

@@ -1,6 +1,10 @@
 syntax = "proto3";
 
-option go_package = "github.com/tobyrushton/globalfront/pb/matchmaker";
+package matchmaker.v1;
+
+import "game/v1/game.proto";
+
+option go_package = "github.com/tobyrushton/globalfront/pb/matchmaker/v1";
 
 service Matchmaker {
     rpc GetCurrentGame(GetCurrentGameRequest) returns (GetCurrentGameResponse);
@@ -9,5 +13,5 @@ service Matchmaker {
 message GetCurrentGameRequest {}
 
 message GetCurrentGameResponse {
-    string name = 1;
+    game.v1.Game game = 1;
 }
