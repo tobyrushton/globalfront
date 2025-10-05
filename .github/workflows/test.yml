@@ -1,0 +1,22 @@
+name: Test Workflow
+
+on:
+    pull_request:
+
+jobs:
+    test-mm:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout code
+          uses: actions/checkout@v5
+  
+        - name: Set up Go
+          uses: actions/setup-go@v6
+          with:
+              go-version: '1.23'
+  
+        - name: Install dependencies
+          run: go mod tidy
+  
+        - name: Run tests
+          run: cd buildtools && make gotest-mm
