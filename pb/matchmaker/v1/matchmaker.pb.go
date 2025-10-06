@@ -282,9 +282,7 @@ func (x *JoinAcknowledgement) GetMessage() string {
 
 type ServerDetails struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Address       string                 `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	Port          int32                  `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`
-	PlayerId      string                 `protobuf:"bytes,3,opt,name=player_id,json=playerId,proto3" json:"player_id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -319,23 +317,9 @@ func (*ServerDetails) Descriptor() ([]byte, []int) {
 	return file_matchmaker_v1_matchmaker_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *ServerDetails) GetAddress() string {
+func (x *ServerDetails) GetId() string {
 	if x != nil {
-		return x.Address
-	}
-	return ""
-}
-
-func (x *ServerDetails) GetPort() int32 {
-	if x != nil {
-		return x.Port
-	}
-	return 0
-}
-
-func (x *ServerDetails) GetPlayerId() string {
-	if x != nil {
-		return x.PlayerId
+		return x.Id
 	}
 	return ""
 }
@@ -400,11 +384,9 @@ const file_matchmaker_v1_matchmaker_proto_rawDesc = "" +
 	"\x05error\x18\x03 \x01(\v2\x18.matchmaker.v1.JoinErrorH\x00R\x05errorB\b\n" +
 	"\x06update\"/\n" +
 	"\x13JoinAcknowledgement\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage\"Z\n" +
-	"\rServerDetails\x12\x18\n" +
-	"\aaddress\x18\x01 \x01(\tR\aaddress\x12\x12\n" +
-	"\x04port\x18\x02 \x01(\x05R\x04port\x12\x1b\n" +
-	"\tplayer_id\x18\x03 \x01(\tR\bplayerId\"%\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"\x1f\n" +
+	"\rServerDetails\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"%\n" +
 	"\tJoinError\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage2\xb4\x01\n" +
 	"\n" +

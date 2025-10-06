@@ -32,9 +32,7 @@ message JoinAcknowledgement {
 }
 
 message ServerDetails {
-    string address = 1;
-    int32 port = 2;
-    string player_id = 3;
+    string id = 1;
 }
 
 message JoinError {

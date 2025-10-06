@@ -69,9 +69,7 @@ func (s *MatchmakerServer) JoinGame(req *pb.JoinGameRequest, stream pb.Matchmake
 		} else {
 			joinUpdate.Update = &pb.JoinUpdate_ServerDetails{
 				ServerDetails: &pb.ServerDetails{
-					Address:  "localhost",
-					Port:     5432,
-					PlayerId: playerID,
+					Id: update.GameId,
 				},
 			}
 		}
