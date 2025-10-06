@@ -21,6 +21,8 @@ static_resources:
                         - match: { prefix: "/" }
                           route:
                             cluster: matchmaker_service
+                            max_stream_duration:
+                              grpc_timeout_header_max: 0s
                           typed_per_filter_config:
                             envoy.filters.http.cors:
                               "@type": type.googleapis.com/envoy.extensions.filters.http.cors.v3.CorsPolicy
