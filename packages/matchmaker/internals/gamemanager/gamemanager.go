@@ -3,6 +3,7 @@ package gamemanager
 import (
 	"context"
 	"errors"
+	"fmt"
 	"sync"
 
 	"github.com/google/uuid"
@@ -10,6 +11,7 @@ import (
 	game "github.com/tobyrushton/globalfront/pb/game/v1"
 	pb "github.com/tobyrushton/globalfront/pb/gamebox/v1"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type GameManager struct {
@@ -39,7 +41,7 @@ func NewGameManager(ctx context.Context, gf *gamefactory.GameFactory) *GameManag
 
 	go func() {
 		for game := range gf.GetGameChannel() {
-			if gm.game != nil && gm.game.PlayerCount > 2 {
+			if gm.game != nil && gm.game.PlayerCount > 1 {
 				gm.startGame()
 			}
 			gm.gameMu.Lock()
@@ -63,14 +65,12 @@ func (gm *GameManager) GetCurrentGame() *game.Game {
 
 func (gm *GameManager) JoinGame() (string, error) {
 	gm.gameMu.Lock()
-	defer gm.gameMu.Unlock()
 
 	if gm.game == nil {
 		return "", errors.New("no game available")
 	}
 
 	if len(gm.playerDetails) >= int(gm.game.MaxPlayers) {
-		gm.startGame()
 		return "", errors.New("game is full")
 	}
 
@@ -78,14 +78,24 @@ func (gm *GameManager) JoinGame() (string, error) {
 	gm.playerDetails[playerID] = struct{}{}
 	gm.game.PlayerCount++
 
+	gm.gameMu.Unlock()
+	if gm.game.PlayerCount == gm.game.MaxPlayers {
+		gm.startGame()
+	}
+
 	return playerID, nil
 }
 
 func (gm *GameManager) startGame() error {
+	fmt.Println("Attempting to start game...")
 	gm.gameMu.Lock()
 	defer gm.gameMu.Lock()
+	fmt.Println("obtained lock to start game")
 
-	conn, err := grpc.NewClient("localhost:5432")
+	conn, err := grpc.NewClient(
+		"gamebox:5432",
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
 	if err != nil {
 		return err
 	}
@@ -95,10 +105,13 @@ func (gm *GameManager) startGame() error {
 	req := &pb.CreateGameRequest{
 		Game: gm.game,
 	}
+	fmt.Println("Starting game with ID:", gm.game.Id)
 	res, err := client.CreateGame(gm.ctx, req)
 	if err != nil {
+		fmt.Println("Error starting game:", err)
 		return err
 	}
+	fmt.Println("Game started with ID:", res.GameId)
 
 	gm.updateChan <- Update{
 		GameId: res.GameId,
