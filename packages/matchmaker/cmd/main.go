@@ -16,7 +16,7 @@ func main() {
 	gm := gamemanager.NewGameManager(gf)
 	mm := matchmaker.New(gm)
 
-	lis, err := net.Listen("tcp", ":8080")
+	lis, err := net.Listen("tcp", ":4321")
 	if err != nil {
 		log.Fatal(err)
 	}
