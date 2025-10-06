@@ -10,10 +10,8 @@
   },
   "dependencies": {
     "@globalfront/pb": "file:../../pb",
-    "@grpc/grpc-js": "^1.14.0",
     "@protobuf-ts/grpc-transport": "^2.11.1",
     "@protobuf-ts/grpcweb-transport": "^2.11.1",
-    "google-protobuf": "^4.0.0",
     "next": "15.5.4",
     "react": "19.1.0",
     "react-dom": "19.1.0"
