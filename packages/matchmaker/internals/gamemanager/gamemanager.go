@@ -20,11 +20,10 @@ type GameManager struct {
 	gameMu sync.Mutex
 	game   *game.Game
 
-	playerDetails map[string]struct{}
+	playerMu sync.Mutex
+	players  map[string]chan Update
 
 	gf *gamefactory.GameFactory
-
-	updateChan chan Update
 }
 
 type Update struct {
@@ -34,9 +33,8 @@ type Update struct {
 
 func NewGameManager(ctx context.Context, gf *gamefactory.GameFactory) *GameManager {
 	gm := &GameManager{
-		ctx:        ctx,
-		gf:         gf,
-		updateChan: make(chan Update, 1),
+		ctx: ctx,
+		gf:  gf,
 	}
 
 	go func() {
@@ -46,13 +44,17 @@ func NewGameManager(ctx context.Context, gf *gamefactory.GameFactory) *GameManag
 			}
 			gm.gameMu.Lock()
 			if gm.game != nil && gm.game.PlayerCount == 1 {
-				gm.updateChan <- Update{
-					GameId: "",
-					Err:    errors.New("not enough players to start a game"),
+				gm.playerMu.Lock()
+				for _, ch := range gm.players {
+					ch <- Update{
+						GameId: "",
+						Err:    errors.New("game cancelled due to insufficient players"),
+					}
 				}
+				gm.playerMu.Unlock()
 			}
 			gm.game = game
-			gm.playerDetails = make(map[string]struct{})
+			gm.players = make(map[string]chan Update)
 			gm.gameMu.Unlock()
 		}
 	}()
@@ -70,12 +72,14 @@ func (gm *GameManager) JoinGame() (string, error) {
 		return "", errors.New("no game available")
 	}
 
-	if len(gm.playerDetails) >= int(gm.game.MaxPlayers) {
+	if len(gm.players) >= int(gm.game.MaxPlayers) {
 		return "", errors.New("game is full")
 	}
 
 	playerID := uuid.New().String()
-	gm.playerDetails[playerID] = struct{}{}
+	gm.playerMu.Lock()
+	gm.players[playerID] = make(chan Update)
+	gm.playerMu.Unlock()
 	gm.game.PlayerCount++
 
 	gm.gameMu.Unlock()
@@ -113,22 +117,31 @@ func (gm *GameManager) startGame() error {
 	}
 	fmt.Println("Game started with ID:", res.GameId)
 
-	gm.updateChan <- Update{
-		GameId: res.GameId,
-		Err:    nil,
+	gm.playerMu.Lock()
+	for _, ch := range gm.players {
+		ch <- Update{
+			GameId: res.GameId,
+			Err:    nil,
+		}
 	}
+	gm.playerMu.Unlock()
 
 	return nil
-}
-
-func (gm *GameManager) GetUpdateChannel() <-chan Update {
-	return gm.updateChan
 }
 
 func (gm *GameManager) RemovePlayer(playerId string) {
 	gm.gameMu.Lock()
 	defer gm.gameMu.Unlock()
+	gm.playerMu.Lock()
+	defer gm.playerMu.Unlock()
 
-	delete(gm.playerDetails, playerId)
+	delete(gm.players, playerId)
 	gm.game.PlayerCount--
+}
+
+func (gm *GameManager) GetUpdateChannel(playerId string) chan Update {
+	gm.gameMu.Lock()
+	defer gm.gameMu.Unlock()
+
+	return gm.players[playerId]
 }
