@@ -16,3 +16,11 @@ services:
       - ./envoy/envoy.yml:/etc/envoy/envoy.yaml:ro
     depends_on:
       - matchmaker
+
+  gamebox:
+    build:
+      context: .
+      dockerfile: packages/gamebox/Dockerfile
+    container_name: gamebox
+    ports:
+      - "5432:5432"
