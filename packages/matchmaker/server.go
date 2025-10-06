@@ -54,17 +54,29 @@ func (s *MatchmakerServer) JoinGame(req *pb.JoinGameRequest, stream pb.Matchmake
 		return nil
 	}
 
-	// TODO: Implement server startup
-	if err := stream.Send(&pb.JoinUpdate{
-		Update: &pb.JoinUpdate_ServerDetails{
-			ServerDetails: &pb.ServerDetails{
-				Address:  "",
-				Port:     0,
-				PlayerId: playerID,
-			},
-		},
-	}); err != nil {
-		return err
+	select {
+	case <-stream.Context().Done():
+		return stream.Context().Err()
+	case update := <-s.gm.GetUpdateChannel():
+		joinUpdate = &pb.JoinUpdate{}
+		if update.Err != nil {
+			joinUpdate.Update = &pb.JoinUpdate_Error{
+				Error: &pb.JoinError{
+					Message: update.Err.Error(),
+				},
+			}
+		} else {
+			joinUpdate.Update = &pb.JoinUpdate_ServerDetails{
+				ServerDetails: &pb.ServerDetails{
+					Address:  "localhost",
+					Port:     5432,
+					PlayerId: playerID,
+				},
+			}
+		}
+		if err := stream.Send(joinUpdate); err != nil {
+			return err
+		}
 	}
 
 	return nil

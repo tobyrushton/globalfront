@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net"
 
@@ -13,7 +14,7 @@ import (
 
 func main() {
 	gf := gamefactory.New(60)
-	gm := gamemanager.NewGameManager(gf)
+	gm := gamemanager.NewGameManager(context.Background(), gf)
 	mm := matchmaker.New(gm)
 
 	lis, err := net.Listen("tcp", ":4321")
