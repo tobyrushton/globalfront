@@ -8,10 +8,35 @@ option go_package = "github.com/tobyrushton/globalfront/pb/matchmaker/v1";
 
 service Matchmaker {
     rpc GetCurrentGame(GetCurrentGameRequest) returns (GetCurrentGameResponse);
+    rpc JoinGame(JoinGameRequest) returns (stream JoinUpdate);
 }
 
 message GetCurrentGameRequest {}
 
 message GetCurrentGameResponse {
     game.v1.Game game = 1;
+}
+
+message JoinGameRequest {}
+
+message JoinUpdate {
+    oneof update {
+        JoinAcknowledgement acknowledgement = 1;
+        ServerDetails server_details = 2;
+        JoinError error = 3;
+    }
+}
+
+message JoinAcknowledgement {
+    string message = 1;
+}
+
+message ServerDetails {
+    string address = 1;
+    int32 port = 2;
+    string player_id = 3;
+}
+
+message JoinError {
+    string message = 1;
 }

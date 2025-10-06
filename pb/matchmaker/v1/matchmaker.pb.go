@@ -102,6 +102,288 @@ func (x *GetCurrentGameResponse) GetGame() *v1.Game {
 	return nil
 }
 
+type JoinGameRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *JoinGameRequest) Reset() {
+	*x = JoinGameRequest{}
+	mi := &file_matchmaker_v1_matchmaker_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *JoinGameRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*JoinGameRequest) ProtoMessage() {}
+
+func (x *JoinGameRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_matchmaker_v1_matchmaker_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use JoinGameRequest.ProtoReflect.Descriptor instead.
+func (*JoinGameRequest) Descriptor() ([]byte, []int) {
+	return file_matchmaker_v1_matchmaker_proto_rawDescGZIP(), []int{2}
+}
+
+type JoinUpdate struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Types that are valid to be assigned to Update:
+	//
+	//	*JoinUpdate_Acknowledgement
+	//	*JoinUpdate_ServerDetails
+	//	*JoinUpdate_Error
+	Update        isJoinUpdate_Update `protobuf_oneof:"update"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *JoinUpdate) Reset() {
+	*x = JoinUpdate{}
+	mi := &file_matchmaker_v1_matchmaker_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *JoinUpdate) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*JoinUpdate) ProtoMessage() {}
+
+func (x *JoinUpdate) ProtoReflect() protoreflect.Message {
+	mi := &file_matchmaker_v1_matchmaker_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use JoinUpdate.ProtoReflect.Descriptor instead.
+func (*JoinUpdate) Descriptor() ([]byte, []int) {
+	return file_matchmaker_v1_matchmaker_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *JoinUpdate) GetUpdate() isJoinUpdate_Update {
+	if x != nil {
+		return x.Update
+	}
+	return nil
+}
+
+func (x *JoinUpdate) GetAcknowledgement() *JoinAcknowledgement {
+	if x != nil {
+		if x, ok := x.Update.(*JoinUpdate_Acknowledgement); ok {
+			return x.Acknowledgement
+		}
+	}
+	return nil
+}
+
+func (x *JoinUpdate) GetServerDetails() *ServerDetails {
+	if x != nil {
+		if x, ok := x.Update.(*JoinUpdate_ServerDetails); ok {
+			return x.ServerDetails
+		}
+	}
+	return nil
+}
+
+func (x *JoinUpdate) GetError() *JoinError {
+	if x != nil {
+		if x, ok := x.Update.(*JoinUpdate_Error); ok {
+			return x.Error
+		}
+	}
+	return nil
+}
+
+type isJoinUpdate_Update interface {
+	isJoinUpdate_Update()
+}
+
+type JoinUpdate_Acknowledgement struct {
+	Acknowledgement *JoinAcknowledgement `protobuf:"bytes,1,opt,name=acknowledgement,proto3,oneof"`
+}
+
+type JoinUpdate_ServerDetails struct {
+	ServerDetails *ServerDetails `protobuf:"bytes,2,opt,name=server_details,json=serverDetails,proto3,oneof"`
+}
+
+type JoinUpdate_Error struct {
+	Error *JoinError `protobuf:"bytes,3,opt,name=error,proto3,oneof"`
+}
+
+func (*JoinUpdate_Acknowledgement) isJoinUpdate_Update() {}
+
+func (*JoinUpdate_ServerDetails) isJoinUpdate_Update() {}
+
+func (*JoinUpdate_Error) isJoinUpdate_Update() {}
+
+type JoinAcknowledgement struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *JoinAcknowledgement) Reset() {
+	*x = JoinAcknowledgement{}
+	mi := &file_matchmaker_v1_matchmaker_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *JoinAcknowledgement) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*JoinAcknowledgement) ProtoMessage() {}
+
+func (x *JoinAcknowledgement) ProtoReflect() protoreflect.Message {
+	mi := &file_matchmaker_v1_matchmaker_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use JoinAcknowledgement.ProtoReflect.Descriptor instead.
+func (*JoinAcknowledgement) Descriptor() ([]byte, []int) {
+	return file_matchmaker_v1_matchmaker_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *JoinAcknowledgement) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+type ServerDetails struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Address       string                 `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	Port          int32                  `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`
+	PlayerId      string                 `protobuf:"bytes,3,opt,name=player_id,json=playerId,proto3" json:"player_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ServerDetails) Reset() {
+	*x = ServerDetails{}
+	mi := &file_matchmaker_v1_matchmaker_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ServerDetails) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ServerDetails) ProtoMessage() {}
+
+func (x *ServerDetails) ProtoReflect() protoreflect.Message {
+	mi := &file_matchmaker_v1_matchmaker_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ServerDetails.ProtoReflect.Descriptor instead.
+func (*ServerDetails) Descriptor() ([]byte, []int) {
+	return file_matchmaker_v1_matchmaker_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *ServerDetails) GetAddress() string {
+	if x != nil {
+		return x.Address
+	}
+	return ""
+}
+
+func (x *ServerDetails) GetPort() int32 {
+	if x != nil {
+		return x.Port
+	}
+	return 0
+}
+
+func (x *ServerDetails) GetPlayerId() string {
+	if x != nil {
+		return x.PlayerId
+	}
+	return ""
+}
+
+type JoinError struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *JoinError) Reset() {
+	*x = JoinError{}
+	mi := &file_matchmaker_v1_matchmaker_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *JoinError) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*JoinError) ProtoMessage() {}
+
+func (x *JoinError) ProtoReflect() protoreflect.Message {
+	mi := &file_matchmaker_v1_matchmaker_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use JoinError.ProtoReflect.Descriptor instead.
+func (*JoinError) Descriptor() ([]byte, []int) {
+	return file_matchmaker_v1_matchmaker_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *JoinError) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 var File_matchmaker_v1_matchmaker_proto protoreflect.FileDescriptor
 
 const file_matchmaker_v1_matchmaker_proto_rawDesc = "" +
@@ -109,10 +391,26 @@ const file_matchmaker_v1_matchmaker_proto_rawDesc = "" +
 	"\x1ematchmaker/v1/matchmaker.proto\x12\rmatchmaker.v1\x1a\x12game/v1/game.proto\"\x17\n" +
 	"\x15GetCurrentGameRequest\";\n" +
 	"\x16GetCurrentGameResponse\x12!\n" +
-	"\x04game\x18\x01 \x01(\v2\r.game.v1.GameR\x04game2k\n" +
+	"\x04game\x18\x01 \x01(\v2\r.game.v1.GameR\x04game\"\x11\n" +
+	"\x0fJoinGameRequest\"\xdf\x01\n" +
+	"\n" +
+	"JoinUpdate\x12N\n" +
+	"\x0facknowledgement\x18\x01 \x01(\v2\".matchmaker.v1.JoinAcknowledgementH\x00R\x0facknowledgement\x12E\n" +
+	"\x0eserver_details\x18\x02 \x01(\v2\x1c.matchmaker.v1.ServerDetailsH\x00R\rserverDetails\x120\n" +
+	"\x05error\x18\x03 \x01(\v2\x18.matchmaker.v1.JoinErrorH\x00R\x05errorB\b\n" +
+	"\x06update\"/\n" +
+	"\x13JoinAcknowledgement\x12\x18\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"Z\n" +
+	"\rServerDetails\x12\x18\n" +
+	"\aaddress\x18\x01 \x01(\tR\aaddress\x12\x12\n" +
+	"\x04port\x18\x02 \x01(\x05R\x04port\x12\x1b\n" +
+	"\tplayer_id\x18\x03 \x01(\tR\bplayerId\"%\n" +
+	"\tJoinError\x12\x18\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage2\xb4\x01\n" +
 	"\n" +
 	"Matchmaker\x12]\n" +
-	"\x0eGetCurrentGame\x12$.matchmaker.v1.GetCurrentGameRequest\x1a%.matchmaker.v1.GetCurrentGameResponseB5Z3github.com/tobyrushton/globalfront/pb/matchmaker/v1b\x06proto3"
+	"\x0eGetCurrentGame\x12$.matchmaker.v1.GetCurrentGameRequest\x1a%.matchmaker.v1.GetCurrentGameResponse\x12G\n" +
+	"\bJoinGame\x12\x1e.matchmaker.v1.JoinGameRequest\x1a\x19.matchmaker.v1.JoinUpdate0\x01B5Z3github.com/tobyrushton/globalfront/pb/matchmaker/v1b\x06proto3"
 
 var (
 	file_matchmaker_v1_matchmaker_proto_rawDescOnce sync.Once
@@ -126,21 +424,31 @@ func file_matchmaker_v1_matchmaker_proto_rawDescGZIP() []byte {
 	return file_matchmaker_v1_matchmaker_proto_rawDescData
 }
 
-var file_matchmaker_v1_matchmaker_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_matchmaker_v1_matchmaker_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_matchmaker_v1_matchmaker_proto_goTypes = []any{
 	(*GetCurrentGameRequest)(nil),  // 0: matchmaker.v1.GetCurrentGameRequest
 	(*GetCurrentGameResponse)(nil), // 1: matchmaker.v1.GetCurrentGameResponse
-	(*v1.Game)(nil),                // 2: game.v1.Game
+	(*JoinGameRequest)(nil),        // 2: matchmaker.v1.JoinGameRequest
+	(*JoinUpdate)(nil),             // 3: matchmaker.v1.JoinUpdate
+	(*JoinAcknowledgement)(nil),    // 4: matchmaker.v1.JoinAcknowledgement
+	(*ServerDetails)(nil),          // 5: matchmaker.v1.ServerDetails
+	(*JoinError)(nil),              // 6: matchmaker.v1.JoinError
+	(*v1.Game)(nil),                // 7: game.v1.Game
 }
 var file_matchmaker_v1_matchmaker_proto_depIdxs = []int32{
-	2, // 0: matchmaker.v1.GetCurrentGameResponse.game:type_name -> game.v1.Game
-	0, // 1: matchmaker.v1.Matchmaker.GetCurrentGame:input_type -> matchmaker.v1.GetCurrentGameRequest
-	1, // 2: matchmaker.v1.Matchmaker.GetCurrentGame:output_type -> matchmaker.v1.GetCurrentGameResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	7, // 0: matchmaker.v1.GetCurrentGameResponse.game:type_name -> game.v1.Game
+	4, // 1: matchmaker.v1.JoinUpdate.acknowledgement:type_name -> matchmaker.v1.JoinAcknowledgement
+	5, // 2: matchmaker.v1.JoinUpdate.server_details:type_name -> matchmaker.v1.ServerDetails
+	6, // 3: matchmaker.v1.JoinUpdate.error:type_name -> matchmaker.v1.JoinError
+	0, // 4: matchmaker.v1.Matchmaker.GetCurrentGame:input_type -> matchmaker.v1.GetCurrentGameRequest
+	2, // 5: matchmaker.v1.Matchmaker.JoinGame:input_type -> matchmaker.v1.JoinGameRequest
+	1, // 6: matchmaker.v1.Matchmaker.GetCurrentGame:output_type -> matchmaker.v1.GetCurrentGameResponse
+	3, // 7: matchmaker.v1.Matchmaker.JoinGame:output_type -> matchmaker.v1.JoinUpdate
+	6, // [6:8] is the sub-list for method output_type
+	4, // [4:6] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_matchmaker_v1_matchmaker_proto_init() }
@@ -148,13 +456,18 @@ func file_matchmaker_v1_matchmaker_proto_init() {
 	if File_matchmaker_v1_matchmaker_proto != nil {
 		return
 	}
+	file_matchmaker_v1_matchmaker_proto_msgTypes[3].OneofWrappers = []any{
+		(*JoinUpdate_Acknowledgement)(nil),
+		(*JoinUpdate_ServerDetails)(nil),
+		(*JoinUpdate_Error)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_matchmaker_v1_matchmaker_proto_rawDesc), len(file_matchmaker_v1_matchmaker_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

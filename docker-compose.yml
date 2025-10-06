@@ -1,0 +1,26 @@
+services:
+  matchmaker:
+    build:
+      context: .
+      dockerfile: packages/matchmaker/Dockerfile
+    container_name: matchmaker
+    ports:
+      - "4321:4321"
+
+  envoy-proxy:
+    image: envoyproxy/envoy:v1.30-latest
+    container_name: envoy-proxy
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./envoy/envoy.yml:/etc/envoy/envoy.yaml:ro
+    depends_on:
+      - matchmaker
+
+  gamebox:
+    build:
+      context: .
+      dockerfile: packages/gamebox/Dockerfile
+    container_name: gamebox
+    ports:
+      - "5432:5432"

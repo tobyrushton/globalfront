@@ -1,16 +1,8 @@
-import { matchmaker } from '@globalfront/pb/matchmaker/v1/matchmaker';
-import * as grpc from "@grpc/grpc-js";
+import { serverClient } from "@/grpc/client"
+import { Game } from "@globalfront/pb/game/v1/game"
 
-const client = new matchmaker.v1.MatchmakerClient('localhost:8080', grpc.credentials.createInsecure());
+export const getCurrentGame = async (): Promise<Game>  => {
+    const res = await serverClient.getCurrentGame({})
 
-export async function getCurrentGame() {
-    const req = new matchmaker.v1.GetCurrentGameRequest()
-
-    client.GetCurrentGame(req, (err, response) => {
-        if (err) {
-          console.error(err)
-          return
-        }
-        console.log(response?.toObject().game)
-      })
-}
+    return res.response.game!
+  }

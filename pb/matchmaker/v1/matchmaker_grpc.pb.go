@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	Matchmaker_GetCurrentGame_FullMethodName = "/matchmaker.v1.Matchmaker/GetCurrentGame"
+	Matchmaker_JoinGame_FullMethodName       = "/matchmaker.v1.Matchmaker/JoinGame"
 )
 
 // MatchmakerClient is the client API for Matchmaker service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MatchmakerClient interface {
 	GetCurrentGame(ctx context.Context, in *GetCurrentGameRequest, opts ...grpc.CallOption) (*GetCurrentGameResponse, error)
+	JoinGame(ctx context.Context, in *JoinGameRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[JoinUpdate], error)
 }
 
 type matchmakerClient struct {
@@ -47,11 +49,31 @@ func (c *matchmakerClient) GetCurrentGame(ctx context.Context, in *GetCurrentGam
 	return out, nil
 }
 
+func (c *matchmakerClient) JoinGame(ctx context.Context, in *JoinGameRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[JoinUpdate], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &Matchmaker_ServiceDesc.Streams[0], Matchmaker_JoinGame_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[JoinGameRequest, JoinUpdate]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type Matchmaker_JoinGameClient = grpc.ServerStreamingClient[JoinUpdate]
+
 // MatchmakerServer is the server API for Matchmaker service.
 // All implementations must embed UnimplementedMatchmakerServer
 // for forward compatibility.
 type MatchmakerServer interface {
 	GetCurrentGame(context.Context, *GetCurrentGameRequest) (*GetCurrentGameResponse, error)
+	JoinGame(*JoinGameRequest, grpc.ServerStreamingServer[JoinUpdate]) error
 	mustEmbedUnimplementedMatchmakerServer()
 }
 
@@ -64,6 +86,9 @@ type UnimplementedMatchmakerServer struct{}
 
 func (UnimplementedMatchmakerServer) GetCurrentGame(context.Context, *GetCurrentGameRequest) (*GetCurrentGameResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCurrentGame not implemented")
+}
+func (UnimplementedMatchmakerServer) JoinGame(*JoinGameRequest, grpc.ServerStreamingServer[JoinUpdate]) error {
+	return status.Errorf(codes.Unimplemented, "method JoinGame not implemented")
 }
 func (UnimplementedMatchmakerServer) mustEmbedUnimplementedMatchmakerServer() {}
 func (UnimplementedMatchmakerServer) testEmbeddedByValue()                    {}
@@ -104,6 +129,17 @@ func _Matchmaker_GetCurrentGame_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Matchmaker_JoinGame_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(JoinGameRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(MatchmakerServer).JoinGame(m, &grpc.GenericServerStream[JoinGameRequest, JoinUpdate]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type Matchmaker_JoinGameServer = grpc.ServerStreamingServer[JoinUpdate]
+
 // Matchmaker_ServiceDesc is the grpc.ServiceDesc for Matchmaker service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -116,6 +152,12 @@ var Matchmaker_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Matchmaker_GetCurrentGame_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "JoinGame",
+			Handler:       _Matchmaker_JoinGame_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "matchmaker/v1/matchmaker.proto",
 }

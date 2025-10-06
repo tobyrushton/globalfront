@@ -9,12 +9,12 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@grpc/grpc-js": "^1.14.0",
-    "google-protobuf": "^4.0.0",
+    "@globalfront/pb": "file:../../pb",
+    "@protobuf-ts/grpc-transport": "^2.11.1",
+    "@protobuf-ts/grpcweb-transport": "^2.11.1",
     "next": "15.5.4",
     "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "@globalfront/pb": "file:../../pb"
+    "react-dom": "19.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
