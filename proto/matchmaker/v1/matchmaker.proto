@@ -9,6 +9,7 @@ option go_package = "github.com/tobyrushton/globalfront/pb/matchmaker/v1";
 service Matchmaker {
     rpc GetCurrentGame(GetCurrentGameRequest) returns (GetCurrentGameResponse);
     rpc JoinGame(JoinGameRequest) returns (stream JoinUpdate);
+    rpc GetGameDetails(GetGameDetailsRequest) returns (GetGameDetailsResponse);
 }
 
 message GetCurrentGameRequest {}
@@ -37,4 +38,13 @@ message ServerDetails {
 
 message JoinError {
     string message = 1;
+}
+
+message GetGameDetailsRequest {
+    string game_id = 1;
+}
+
+message GetGameDetailsResponse {
+    game.v1.Game game = 1;
+    string url = 2;
 }

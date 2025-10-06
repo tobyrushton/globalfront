@@ -368,6 +368,102 @@ func (x *JoinError) GetMessage() string {
 	return ""
 }
 
+type GetGameDetailsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	GameId        string                 `protobuf:"bytes,1,opt,name=game_id,json=gameId,proto3" json:"game_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetGameDetailsRequest) Reset() {
+	*x = GetGameDetailsRequest{}
+	mi := &file_matchmaker_v1_matchmaker_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetGameDetailsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetGameDetailsRequest) ProtoMessage() {}
+
+func (x *GetGameDetailsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_matchmaker_v1_matchmaker_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetGameDetailsRequest.ProtoReflect.Descriptor instead.
+func (*GetGameDetailsRequest) Descriptor() ([]byte, []int) {
+	return file_matchmaker_v1_matchmaker_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *GetGameDetailsRequest) GetGameId() string {
+	if x != nil {
+		return x.GameId
+	}
+	return ""
+}
+
+type GetGameDetailsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Game          *v1.Game               `protobuf:"bytes,1,opt,name=game,proto3" json:"game,omitempty"`
+	Url           string                 `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetGameDetailsResponse) Reset() {
+	*x = GetGameDetailsResponse{}
+	mi := &file_matchmaker_v1_matchmaker_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetGameDetailsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetGameDetailsResponse) ProtoMessage() {}
+
+func (x *GetGameDetailsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_matchmaker_v1_matchmaker_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetGameDetailsResponse.ProtoReflect.Descriptor instead.
+func (*GetGameDetailsResponse) Descriptor() ([]byte, []int) {
+	return file_matchmaker_v1_matchmaker_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *GetGameDetailsResponse) GetGame() *v1.Game {
+	if x != nil {
+		return x.Game
+	}
+	return nil
+}
+
+func (x *GetGameDetailsResponse) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
 var File_matchmaker_v1_matchmaker_proto protoreflect.FileDescriptor
 
 const file_matchmaker_v1_matchmaker_proto_rawDesc = "" +
@@ -388,11 +484,17 @@ const file_matchmaker_v1_matchmaker_proto_rawDesc = "" +
 	"\rServerDetails\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"%\n" +
 	"\tJoinError\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage2\xb4\x01\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"0\n" +
+	"\x15GetGameDetailsRequest\x12\x17\n" +
+	"\agame_id\x18\x01 \x01(\tR\x06gameId\"M\n" +
+	"\x16GetGameDetailsResponse\x12!\n" +
+	"\x04game\x18\x01 \x01(\v2\r.game.v1.GameR\x04game\x12\x10\n" +
+	"\x03url\x18\x02 \x01(\tR\x03url2\x93\x02\n" +
 	"\n" +
 	"Matchmaker\x12]\n" +
 	"\x0eGetCurrentGame\x12$.matchmaker.v1.GetCurrentGameRequest\x1a%.matchmaker.v1.GetCurrentGameResponse\x12G\n" +
-	"\bJoinGame\x12\x1e.matchmaker.v1.JoinGameRequest\x1a\x19.matchmaker.v1.JoinUpdate0\x01B5Z3github.com/tobyrushton/globalfront/pb/matchmaker/v1b\x06proto3"
+	"\bJoinGame\x12\x1e.matchmaker.v1.JoinGameRequest\x1a\x19.matchmaker.v1.JoinUpdate0\x01\x12]\n" +
+	"\x0eGetGameDetails\x12$.matchmaker.v1.GetGameDetailsRequest\x1a%.matchmaker.v1.GetGameDetailsResponseB5Z3github.com/tobyrushton/globalfront/pb/matchmaker/v1b\x06proto3"
 
 var (
 	file_matchmaker_v1_matchmaker_proto_rawDescOnce sync.Once
@@ -406,7 +508,7 @@ func file_matchmaker_v1_matchmaker_proto_rawDescGZIP() []byte {
 	return file_matchmaker_v1_matchmaker_proto_rawDescData
 }
 
-var file_matchmaker_v1_matchmaker_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_matchmaker_v1_matchmaker_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_matchmaker_v1_matchmaker_proto_goTypes = []any{
 	(*GetCurrentGameRequest)(nil),  // 0: matchmaker.v1.GetCurrentGameRequest
 	(*GetCurrentGameResponse)(nil), // 1: matchmaker.v1.GetCurrentGameResponse
@@ -415,22 +517,27 @@ var file_matchmaker_v1_matchmaker_proto_goTypes = []any{
 	(*JoinAcknowledgement)(nil),    // 4: matchmaker.v1.JoinAcknowledgement
 	(*ServerDetails)(nil),          // 5: matchmaker.v1.ServerDetails
 	(*JoinError)(nil),              // 6: matchmaker.v1.JoinError
-	(*v1.Game)(nil),                // 7: game.v1.Game
+	(*GetGameDetailsRequest)(nil),  // 7: matchmaker.v1.GetGameDetailsRequest
+	(*GetGameDetailsResponse)(nil), // 8: matchmaker.v1.GetGameDetailsResponse
+	(*v1.Game)(nil),                // 9: game.v1.Game
 }
 var file_matchmaker_v1_matchmaker_proto_depIdxs = []int32{
-	7, // 0: matchmaker.v1.GetCurrentGameResponse.game:type_name -> game.v1.Game
+	9, // 0: matchmaker.v1.GetCurrentGameResponse.game:type_name -> game.v1.Game
 	4, // 1: matchmaker.v1.JoinUpdate.acknowledgement:type_name -> matchmaker.v1.JoinAcknowledgement
 	5, // 2: matchmaker.v1.JoinUpdate.server_details:type_name -> matchmaker.v1.ServerDetails
 	6, // 3: matchmaker.v1.JoinUpdate.error:type_name -> matchmaker.v1.JoinError
-	0, // 4: matchmaker.v1.Matchmaker.GetCurrentGame:input_type -> matchmaker.v1.GetCurrentGameRequest
-	2, // 5: matchmaker.v1.Matchmaker.JoinGame:input_type -> matchmaker.v1.JoinGameRequest
-	1, // 6: matchmaker.v1.Matchmaker.GetCurrentGame:output_type -> matchmaker.v1.GetCurrentGameResponse
-	3, // 7: matchmaker.v1.Matchmaker.JoinGame:output_type -> matchmaker.v1.JoinUpdate
-	6, // [6:8] is the sub-list for method output_type
-	4, // [4:6] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	9, // 4: matchmaker.v1.GetGameDetailsResponse.game:type_name -> game.v1.Game
+	0, // 5: matchmaker.v1.Matchmaker.GetCurrentGame:input_type -> matchmaker.v1.GetCurrentGameRequest
+	2, // 6: matchmaker.v1.Matchmaker.JoinGame:input_type -> matchmaker.v1.JoinGameRequest
+	7, // 7: matchmaker.v1.Matchmaker.GetGameDetails:input_type -> matchmaker.v1.GetGameDetailsRequest
+	1, // 8: matchmaker.v1.Matchmaker.GetCurrentGame:output_type -> matchmaker.v1.GetCurrentGameResponse
+	3, // 9: matchmaker.v1.Matchmaker.JoinGame:output_type -> matchmaker.v1.JoinUpdate
+	8, // 10: matchmaker.v1.Matchmaker.GetGameDetails:output_type -> matchmaker.v1.GetGameDetailsResponse
+	8, // [8:11] is the sub-list for method output_type
+	5, // [5:8] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_matchmaker_v1_matchmaker_proto_init() }
@@ -449,7 +556,7 @@ func file_matchmaker_v1_matchmaker_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_matchmaker_v1_matchmaker_proto_rawDesc), len(file_matchmaker_v1_matchmaker_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

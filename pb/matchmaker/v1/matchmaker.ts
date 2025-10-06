@@ -87,6 +87,28 @@ export interface JoinError {
      */
     message: string;
 }
+/**
+ * @generated from protobuf message matchmaker.v1.GetGameDetailsRequest
+ */
+export interface GetGameDetailsRequest {
+    /**
+     * @generated from protobuf field: string game_id = 1
+     */
+    gameId: string;
+}
+/**
+ * @generated from protobuf message matchmaker.v1.GetGameDetailsResponse
+ */
+export interface GetGameDetailsResponse {
+    /**
+     * @generated from protobuf field: game.v1.Game game = 1
+     */
+    game?: Game;
+    /**
+     * @generated from protobuf field: string url = 2
+     */
+    url: string;
+}
 // @generated message type with reflection information, may provide speed optimized methods
 class GetCurrentGameRequest$Type extends MessageType<GetCurrentGameRequest> {
     constructor() {
@@ -420,10 +442,112 @@ class JoinError$Type extends MessageType<JoinError> {
  * @generated MessageType for protobuf message matchmaker.v1.JoinError
  */
 export const JoinError = new JoinError$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetGameDetailsRequest$Type extends MessageType<GetGameDetailsRequest> {
+    constructor() {
+        super("matchmaker.v1.GetGameDetailsRequest", [
+            { no: 1, name: "game_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<GetGameDetailsRequest>): GetGameDetailsRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.gameId = "";
+        if (value !== undefined)
+            reflectionMergePartial<GetGameDetailsRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetGameDetailsRequest): GetGameDetailsRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string game_id */ 1:
+                    message.gameId = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetGameDetailsRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string game_id = 1; */
+        if (message.gameId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.gameId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message matchmaker.v1.GetGameDetailsRequest
+ */
+export const GetGameDetailsRequest = new GetGameDetailsRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetGameDetailsResponse$Type extends MessageType<GetGameDetailsResponse> {
+    constructor() {
+        super("matchmaker.v1.GetGameDetailsResponse", [
+            { no: 1, name: "game", kind: "message", T: () => Game },
+            { no: 2, name: "url", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<GetGameDetailsResponse>): GetGameDetailsResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.url = "";
+        if (value !== undefined)
+            reflectionMergePartial<GetGameDetailsResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetGameDetailsResponse): GetGameDetailsResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* game.v1.Game game */ 1:
+                    message.game = Game.internalBinaryRead(reader, reader.uint32(), options, message.game);
+                    break;
+                case /* string url */ 2:
+                    message.url = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetGameDetailsResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* game.v1.Game game = 1; */
+        if (message.game)
+            Game.internalBinaryWrite(message.game, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* string url = 2; */
+        if (message.url !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.url);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message matchmaker.v1.GetGameDetailsResponse
+ */
+export const GetGameDetailsResponse = new GetGameDetailsResponse$Type();
 /**
  * @generated ServiceType for protobuf service matchmaker.v1.Matchmaker
  */
 export const Matchmaker = new ServiceType("matchmaker.v1.Matchmaker", [
     { name: "GetCurrentGame", options: {}, I: GetCurrentGameRequest, O: GetCurrentGameResponse },
-    { name: "JoinGame", serverStreaming: true, options: {}, I: JoinGameRequest, O: JoinUpdate }
+    { name: "JoinGame", serverStreaming: true, options: {}, I: JoinGameRequest, O: JoinUpdate },
+    { name: "GetGameDetails", options: {}, I: GetGameDetailsRequest, O: GetGameDetailsResponse }
 ]);
