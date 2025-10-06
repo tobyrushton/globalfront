@@ -111,3 +111,11 @@ func (gm *GameManager) startGame() error {
 func (gm *GameManager) GetUpdateChannel() <-chan Update {
 	return gm.updateChan
 }
+
+func (gm *GameManager) RemovePlayer(playerId string) {
+	gm.gameMu.Lock()
+	defer gm.gameMu.Unlock()
+
+	delete(gm.playerDetails, playerId)
+	gm.game.PlayerCount--
+}

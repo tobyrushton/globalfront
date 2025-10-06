@@ -56,6 +56,7 @@ func (s *MatchmakerServer) JoinGame(req *pb.JoinGameRequest, stream pb.Matchmake
 
 	select {
 	case <-stream.Context().Done():
+		s.gm.RemovePlayer(playerID)
 		return stream.Context().Err()
 	case update := <-s.gm.GetUpdateChannel():
 		joinUpdate = &pb.JoinUpdate{}
