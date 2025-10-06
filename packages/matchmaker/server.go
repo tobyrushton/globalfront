@@ -80,3 +80,14 @@ func (s *MatchmakerServer) JoinGame(req *pb.JoinGameRequest, stream pb.Matchmake
 
 	return nil
 }
+
+func (s *MatchmakerServer) GetGameDetails(ctx context.Context, req *pb.GetGameDetailsRequest) (*pb.GetGameDetailsResponse, error) {
+	game, exists := s.gm.GetGame(req.GameId)
+	if !exists {
+		return nil, nil
+	}
+	return &pb.GetGameDetailsResponse{
+		Game: game.Game,
+		Url:  game.Url,
+	}, nil
+}

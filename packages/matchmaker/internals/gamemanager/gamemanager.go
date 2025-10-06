@@ -14,11 +14,18 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
+type StartedGame struct {
+	Game *game.Game
+	Url  string
+}
+
 type GameManager struct {
 	ctx context.Context
 
-	gameMu sync.Mutex
-	game   *game.Game
+	gamesMu sync.Mutex
+	games   map[string]StartedGame
+
+	currentGame *game.Game
 
 	playerMu sync.Mutex
 	players  map[string]chan Update
@@ -33,17 +40,18 @@ type Update struct {
 
 func NewGameManager(ctx context.Context, gf *gamefactory.GameFactory) *GameManager {
 	gm := &GameManager{
-		ctx: ctx,
-		gf:  gf,
+		ctx:   ctx,
+		gf:    gf,
+		games: make(map[string]StartedGame),
 	}
 
 	go func() {
 		for game := range gf.GetGameChannel() {
-			if gm.game != nil && gm.game.PlayerCount > 1 {
+			if gm.currentGame != nil && gm.currentGame.PlayerCount > 1 {
 				gm.startGame()
 			}
-			gm.gameMu.Lock()
-			if gm.game != nil && gm.game.PlayerCount == 1 {
+			gm.gamesMu.Lock()
+			if gm.currentGame != nil && gm.currentGame.PlayerCount == 1 {
 				gm.playerMu.Lock()
 				for _, ch := range gm.players {
 					ch <- Update{
@@ -53,26 +61,26 @@ func NewGameManager(ctx context.Context, gf *gamefactory.GameFactory) *GameManag
 				}
 				gm.playerMu.Unlock()
 			}
-			gm.game = game
+			gm.currentGame = game
 			gm.players = make(map[string]chan Update)
-			gm.gameMu.Unlock()
+			gm.gamesMu.Unlock()
 		}
 	}()
 	return gm
 }
 
 func (gm *GameManager) GetCurrentGame() *game.Game {
-	return gm.game
+	return gm.currentGame
 }
 
 func (gm *GameManager) JoinGame() (string, error) {
-	gm.gameMu.Lock()
+	gm.gamesMu.Lock()
 
-	if gm.game == nil {
+	if gm.currentGame == nil {
 		return "", errors.New("no game available")
 	}
 
-	if len(gm.players) >= int(gm.game.MaxPlayers) {
+	if len(gm.players) >= int(gm.currentGame.MaxPlayers) {
 		return "", errors.New("game is full")
 	}
 
@@ -80,10 +88,10 @@ func (gm *GameManager) JoinGame() (string, error) {
 	gm.playerMu.Lock()
 	gm.players[playerID] = make(chan Update)
 	gm.playerMu.Unlock()
-	gm.game.PlayerCount++
+	gm.currentGame.PlayerCount++
 
-	gm.gameMu.Unlock()
-	if gm.game.PlayerCount == gm.game.MaxPlayers {
+	gm.gamesMu.Unlock()
+	if gm.currentGame.PlayerCount == gm.currentGame.MaxPlayers {
 		gm.startGame()
 	}
 
@@ -92,8 +100,8 @@ func (gm *GameManager) JoinGame() (string, error) {
 
 func (gm *GameManager) startGame() error {
 	fmt.Println("Attempting to start game...")
-	gm.gameMu.Lock()
-	defer gm.gameMu.Lock()
+	gm.gamesMu.Lock()
+	defer gm.gamesMu.Lock()
 	fmt.Println("obtained lock to start game")
 
 	conn, err := grpc.NewClient(
@@ -107,15 +115,17 @@ func (gm *GameManager) startGame() error {
 
 	client := pb.NewGameboxClient(conn)
 	req := &pb.CreateGameRequest{
-		Game: gm.game,
+		Game: gm.currentGame,
 	}
-	fmt.Println("Starting game with ID:", gm.game.Id)
 	res, err := client.CreateGame(gm.ctx, req)
 	if err != nil {
-		fmt.Println("Error starting game:", err)
 		return err
 	}
-	fmt.Println("Game started with ID:", res.GameId)
+
+	gm.games[res.GameId] = StartedGame{
+		Game: gm.currentGame,
+		Url:  "",
+	}
 
 	gm.playerMu.Lock()
 	for _, ch := range gm.players {
@@ -130,18 +140,26 @@ func (gm *GameManager) startGame() error {
 }
 
 func (gm *GameManager) RemovePlayer(playerId string) {
-	gm.gameMu.Lock()
-	defer gm.gameMu.Unlock()
+	gm.gamesMu.Lock()
+	defer gm.gamesMu.Unlock()
 	gm.playerMu.Lock()
 	defer gm.playerMu.Unlock()
 
 	delete(gm.players, playerId)
-	gm.game.PlayerCount--
+	gm.currentGame.PlayerCount--
 }
 
 func (gm *GameManager) GetUpdateChannel(playerId string) chan Update {
-	gm.gameMu.Lock()
-	defer gm.gameMu.Unlock()
+	gm.playerMu.Lock()
+	defer gm.playerMu.Unlock()
 
 	return gm.players[playerId]
+}
+
+func (gm *GameManager) GetGame(gameId string) (StartedGame, bool) {
+	gm.gamesMu.Lock()
+	defer gm.gamesMu.Unlock()
+
+	game, exists := gm.games[gameId]
+	return game, exists
 }
