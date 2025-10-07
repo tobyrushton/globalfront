@@ -1,6 +1,6 @@
 "use client"
 
-import { FC, useState, useRef, PropsWithChildren, MouseEvent } from "react";
+import { FC, useState, useRef, PropsWithChildren, MouseEvent, WheelEvent } from "react";
 
 type Coordinates = {
     x: number,
@@ -9,6 +9,7 @@ type Coordinates = {
 
 export const GameWrapper: FC<PropsWithChildren> = ({ children }) => {
     const [position, setPosition] = useState<Coordinates>({ x: 0, y: 0 })
+    const [scale, setScale] = useState<number>(1)
     const [dragging, setDragging] = useState<boolean>(false)
     const lastPosition = useRef<Coordinates>({ x: 0, y: 0 })
 
@@ -28,6 +29,13 @@ export const GameWrapper: FC<PropsWithChildren> = ({ children }) => {
         lastPosition.current = { x: e.clientX, y: e.clientY }
     }
 
+   const handleWheel = (e: WheelEvent<HTMLDivElement>) => {
+        e.preventDefault()
+        const zoomSpeed = 0.005
+        const newScale = Math.min(Math.max(0.1, scale + e.deltaY * -zoomSpeed), 5)
+        setScale(newScale)
+   }
+
     return (
         <div 
             className="absolute flex w-full h-full justify-center items-center cursor-grab active:cursor-grabbing"
@@ -35,9 +43,10 @@ export const GameWrapper: FC<PropsWithChildren> = ({ children }) => {
             onMouseUp={onMouseUp}
             onMouseMove={handleMouseMove} 
             onMouseLeave={onMouseUp}
+            onWheel={handleWheel}
         >
             <div style={{
-                transform: `translate(${position.x}px, ${position.y}px)`,
+                transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
                 transition: dragging ? 'none' : 'transform 0.1s ease-out'
             }}>
                 {children}   
