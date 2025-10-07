@@ -124,7 +124,7 @@ func (gm *GameManager) startGame() error {
 
 	gm.games[res.GameId] = StartedGame{
 		Game: gm.currentGame,
-		Url:  "",
+		Url:  fmt.Sprintf("ws://gamebox:%d/ws", res.Port),
 	}
 
 	gm.playerMu.Lock()
