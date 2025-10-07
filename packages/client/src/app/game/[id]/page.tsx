@@ -1,9 +1,17 @@
 import { FC } from "react";
 import { GameWrapper } from "@/components/game/wrapper";
 import { GameBoard } from "@/components/game/board";
+import { serverClient } from "@/grpc/client";
 
-const GamePage: FC = () => {
-    // do something to fetch the url here
+type Props = {
+    params: {
+        id: string;
+    }
+}
+
+const GamePage: FC<Props> = async ({ params: { id }}) => {
+    const res = await serverClient.getGameDetails({ gameId: id })
+    // TODO: handle res
     return (
         <GameWrapper>
             <GameBoard />
