@@ -92,17 +92,15 @@ func (gm *GameManager) JoinGame() (string, error) {
 
 	gm.gamesMu.Unlock()
 	if gm.currentGame.PlayerCount == gm.currentGame.MaxPlayers {
-		gm.startGame()
+		go gm.startGame()
 	}
 
 	return playerID, nil
 }
 
 func (gm *GameManager) startGame() error {
-	fmt.Println("Attempting to start game...")
 	gm.gamesMu.Lock()
 	defer gm.gamesMu.Lock()
-	fmt.Println("obtained lock to start game")
 
 	conn, err := grpc.NewClient(
 		"gamebox:5432",

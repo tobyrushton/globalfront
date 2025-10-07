@@ -37,9 +37,7 @@ func (s *Spawner) Spawn(gm *pb.Game) (*game.Game, error) {
 	}
 
 	newGame := game.New(port, gm)
-	if err := newGame.Start(); err != nil {
-		return nil, err
-	}
+	go newGame.Start()
 
 	s.games[gm.Id] = newGame
 	return newGame, nil
