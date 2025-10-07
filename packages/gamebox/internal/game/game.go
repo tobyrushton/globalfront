@@ -35,3 +35,7 @@ func (g *Game) Start() error {
 func (g *Game) GetId() string {
 	return g.game.Id
 }
+
+func (g *Game) GetPort() int {
+	return g.port
+}

@@ -16,4 +16,5 @@ message CreateGameRequest {
 
 message CreateGameResponse {
     string game_id = 1;
+    int32 port = 2;
 }

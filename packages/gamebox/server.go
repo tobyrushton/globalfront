@@ -32,5 +32,6 @@ func (gb *GameboxServer) CreateGame(ctx context.Context, req *pb.CreateGameReque
 
 	return &pb.CreateGameResponse{
 		GameId: game.GetId(),
+		Port:   int32(game.GetPort()),
 	}, nil
 }
