@@ -69,6 +69,7 @@ func (x *CreateGameRequest) GetGame() *v1.Game {
 type CreateGameResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	GameId        string                 `protobuf:"bytes,1,opt,name=game_id,json=gameId,proto3" json:"game_id,omitempty"`
+	Port          int32                  `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -110,6 +111,13 @@ func (x *CreateGameResponse) GetGameId() string {
 	return ""
 }
 
+func (x *CreateGameResponse) GetPort() int32 {
+	if x != nil {
+		return x.Port
+	}
+	return 0
+}
+
 var File_gamebox_v1_gamebox_proto protoreflect.FileDescriptor
 
 const file_gamebox_v1_gamebox_proto_rawDesc = "" +
@@ -117,9 +125,10 @@ const file_gamebox_v1_gamebox_proto_rawDesc = "" +
 	"\x18gamebox/v1/gamebox.proto\x12\n" +
 	"gamebox.v1\x1a\x12game/v1/game.proto\"6\n" +
 	"\x11CreateGameRequest\x12!\n" +
-	"\x04game\x18\x01 \x01(\v2\r.game.v1.GameR\x04game\"-\n" +
+	"\x04game\x18\x01 \x01(\v2\r.game.v1.GameR\x04game\"A\n" +
 	"\x12CreateGameResponse\x12\x17\n" +
-	"\agame_id\x18\x01 \x01(\tR\x06gameId2V\n" +
+	"\agame_id\x18\x01 \x01(\tR\x06gameId\x12\x12\n" +
+	"\x04port\x18\x02 \x01(\x05R\x04port2V\n" +
 	"\aGamebox\x12K\n" +
 	"\n" +
 	"CreateGame\x12\x1d.gamebox.v1.CreateGameRequest\x1a\x1e.gamebox.v1.CreateGameResponseB2Z0github.com/tobyrushton/globalfront/pb/gamebox/v1b\x06proto3"

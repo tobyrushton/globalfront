@@ -4,6 +4,8 @@
 import type { RpcTransport } from "@protobuf-ts/runtime-rpc";
 import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
 import { Matchmaker } from "./matchmaker";
+import type { GetGameDetailsResponse } from "./matchmaker";
+import type { GetGameDetailsRequest } from "./matchmaker";
 import type { JoinUpdate } from "./matchmaker";
 import type { JoinGameRequest } from "./matchmaker";
 import type { ServerStreamingCall } from "@protobuf-ts/runtime-rpc";
@@ -24,6 +26,10 @@ export interface IMatchmakerClient {
      * @generated from protobuf rpc: JoinGame
      */
     joinGame(input: JoinGameRequest, options?: RpcOptions): ServerStreamingCall<JoinGameRequest, JoinUpdate>;
+    /**
+     * @generated from protobuf rpc: GetGameDetails
+     */
+    getGameDetails(input: GetGameDetailsRequest, options?: RpcOptions): UnaryCall<GetGameDetailsRequest, GetGameDetailsResponse>;
 }
 /**
  * @generated from protobuf service matchmaker.v1.Matchmaker
@@ -47,5 +53,12 @@ export class MatchmakerClient implements IMatchmakerClient, ServiceInfo {
     joinGame(input: JoinGameRequest, options?: RpcOptions): ServerStreamingCall<JoinGameRequest, JoinUpdate> {
         const method = this.methods[1], opt = this._transport.mergeOptions(options);
         return stackIntercept<JoinGameRequest, JoinUpdate>("serverStreaming", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: GetGameDetails
+     */
+    getGameDetails(input: GetGameDetailsRequest, options?: RpcOptions): UnaryCall<GetGameDetailsRequest, GetGameDetailsResponse> {
+        const method = this.methods[2], opt = this._transport.mergeOptions(options);
+        return stackIntercept<GetGameDetailsRequest, GetGameDetailsResponse>("unary", this._transport, method, opt, input);
     }
 }

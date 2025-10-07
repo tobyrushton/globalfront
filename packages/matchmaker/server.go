@@ -58,7 +58,7 @@ func (s *MatchmakerServer) JoinGame(req *pb.JoinGameRequest, stream pb.Matchmake
 	case <-stream.Context().Done():
 		s.gm.RemovePlayer(playerID)
 		return stream.Context().Err()
-	case update := <-s.gm.GetUpdateChannel():
+	case update := <-s.gm.GetUpdateChannel(playerID):
 		joinUpdate = &pb.JoinUpdate{}
 		if update.Err != nil {
 			joinUpdate.Update = &pb.JoinUpdate_Error{
@@ -69,9 +69,7 @@ func (s *MatchmakerServer) JoinGame(req *pb.JoinGameRequest, stream pb.Matchmake
 		} else {
 			joinUpdate.Update = &pb.JoinUpdate_ServerDetails{
 				ServerDetails: &pb.ServerDetails{
-					Address:  "localhost",
-					Port:     5432,
-					PlayerId: playerID,
+					Id: update.GameId,
 				},
 			}
 		}
@@ -81,4 +79,15 @@ func (s *MatchmakerServer) JoinGame(req *pb.JoinGameRequest, stream pb.Matchmake
 	}
 
 	return nil
+}
+
+func (s *MatchmakerServer) GetGameDetails(ctx context.Context, req *pb.GetGameDetailsRequest) (*pb.GetGameDetailsResponse, error) {
+	game, exists := s.gm.GetGame(req.GameId)
+	if !exists {
+		return nil, nil
+	}
+	return &pb.GetGameDetailsResponse{
+		Game: game.Game,
+		Url:  game.Url,
+	}, nil
 }

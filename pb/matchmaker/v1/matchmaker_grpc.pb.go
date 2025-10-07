@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	Matchmaker_GetCurrentGame_FullMethodName = "/matchmaker.v1.Matchmaker/GetCurrentGame"
 	Matchmaker_JoinGame_FullMethodName       = "/matchmaker.v1.Matchmaker/JoinGame"
+	Matchmaker_GetGameDetails_FullMethodName = "/matchmaker.v1.Matchmaker/GetGameDetails"
 )
 
 // MatchmakerClient is the client API for Matchmaker service.
@@ -29,6 +30,7 @@ const (
 type MatchmakerClient interface {
 	GetCurrentGame(ctx context.Context, in *GetCurrentGameRequest, opts ...grpc.CallOption) (*GetCurrentGameResponse, error)
 	JoinGame(ctx context.Context, in *JoinGameRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[JoinUpdate], error)
+	GetGameDetails(ctx context.Context, in *GetGameDetailsRequest, opts ...grpc.CallOption) (*GetGameDetailsResponse, error)
 }
 
 type matchmakerClient struct {
@@ -68,12 +70,23 @@ func (c *matchmakerClient) JoinGame(ctx context.Context, in *JoinGameRequest, op
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type Matchmaker_JoinGameClient = grpc.ServerStreamingClient[JoinUpdate]
 
+func (c *matchmakerClient) GetGameDetails(ctx context.Context, in *GetGameDetailsRequest, opts ...grpc.CallOption) (*GetGameDetailsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetGameDetailsResponse)
+	err := c.cc.Invoke(ctx, Matchmaker_GetGameDetails_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MatchmakerServer is the server API for Matchmaker service.
 // All implementations must embed UnimplementedMatchmakerServer
 // for forward compatibility.
 type MatchmakerServer interface {
 	GetCurrentGame(context.Context, *GetCurrentGameRequest) (*GetCurrentGameResponse, error)
 	JoinGame(*JoinGameRequest, grpc.ServerStreamingServer[JoinUpdate]) error
+	GetGameDetails(context.Context, *GetGameDetailsRequest) (*GetGameDetailsResponse, error)
 	mustEmbedUnimplementedMatchmakerServer()
 }
 
@@ -89,6 +102,9 @@ func (UnimplementedMatchmakerServer) GetCurrentGame(context.Context, *GetCurrent
 }
 func (UnimplementedMatchmakerServer) JoinGame(*JoinGameRequest, grpc.ServerStreamingServer[JoinUpdate]) error {
 	return status.Errorf(codes.Unimplemented, "method JoinGame not implemented")
+}
+func (UnimplementedMatchmakerServer) GetGameDetails(context.Context, *GetGameDetailsRequest) (*GetGameDetailsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGameDetails not implemented")
 }
 func (UnimplementedMatchmakerServer) mustEmbedUnimplementedMatchmakerServer() {}
 func (UnimplementedMatchmakerServer) testEmbeddedByValue()                    {}
@@ -140,6 +156,24 @@ func _Matchmaker_JoinGame_Handler(srv interface{}, stream grpc.ServerStream) err
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type Matchmaker_JoinGameServer = grpc.ServerStreamingServer[JoinUpdate]
 
+func _Matchmaker_GetGameDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGameDetailsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MatchmakerServer).GetGameDetails(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Matchmaker_GetGameDetails_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MatchmakerServer).GetGameDetails(ctx, req.(*GetGameDetailsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Matchmaker_ServiceDesc is the grpc.ServiceDesc for Matchmaker service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -150,6 +184,10 @@ var Matchmaker_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetCurrentGame",
 			Handler:    _Matchmaker_GetCurrentGame_Handler,
+		},
+		{
+			MethodName: "GetGameDetails",
+			Handler:    _Matchmaker_GetGameDetails_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

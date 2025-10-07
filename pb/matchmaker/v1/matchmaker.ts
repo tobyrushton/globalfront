@@ -74,17 +74,9 @@ export interface JoinAcknowledgement {
  */
 export interface ServerDetails {
     /**
-     * @generated from protobuf field: string address = 1
+     * @generated from protobuf field: string id = 1
      */
-    address: string;
-    /**
-     * @generated from protobuf field: int32 port = 2
-     */
-    port: number;
-    /**
-     * @generated from protobuf field: string player_id = 3
-     */
-    playerId: string;
+    id: string;
 }
 /**
  * @generated from protobuf message matchmaker.v1.JoinError
@@ -94,6 +86,28 @@ export interface JoinError {
      * @generated from protobuf field: string message = 1
      */
     message: string;
+}
+/**
+ * @generated from protobuf message matchmaker.v1.GetGameDetailsRequest
+ */
+export interface GetGameDetailsRequest {
+    /**
+     * @generated from protobuf field: string game_id = 1
+     */
+    gameId: string;
+}
+/**
+ * @generated from protobuf message matchmaker.v1.GetGameDetailsResponse
+ */
+export interface GetGameDetailsResponse {
+    /**
+     * @generated from protobuf field: game.v1.Game game = 1
+     */
+    game?: Game;
+    /**
+     * @generated from protobuf field: string url = 2
+     */
+    url: string;
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class GetCurrentGameRequest$Type extends MessageType<GetCurrentGameRequest> {
@@ -338,16 +352,12 @@ export const JoinAcknowledgement = new JoinAcknowledgement$Type();
 class ServerDetails$Type extends MessageType<ServerDetails> {
     constructor() {
         super("matchmaker.v1.ServerDetails", [
-            { no: 1, name: "address", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "port", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-            { no: 3, name: "player_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<ServerDetails>): ServerDetails {
         const message = globalThis.Object.create((this.messagePrototype!));
-        message.address = "";
-        message.port = 0;
-        message.playerId = "";
+        message.id = "";
         if (value !== undefined)
             reflectionMergePartial<ServerDetails>(this, message, value);
         return message;
@@ -357,14 +367,8 @@ class ServerDetails$Type extends MessageType<ServerDetails> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* string address */ 1:
-                    message.address = reader.string();
-                    break;
-                case /* int32 port */ 2:
-                    message.port = reader.int32();
-                    break;
-                case /* string player_id */ 3:
-                    message.playerId = reader.string();
+                case /* string id */ 1:
+                    message.id = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -378,15 +382,9 @@ class ServerDetails$Type extends MessageType<ServerDetails> {
         return message;
     }
     internalBinaryWrite(message: ServerDetails, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string address = 1; */
-        if (message.address !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.address);
-        /* int32 port = 2; */
-        if (message.port !== 0)
-            writer.tag(2, WireType.Varint).int32(message.port);
-        /* string player_id = 3; */
-        if (message.playerId !== "")
-            writer.tag(3, WireType.LengthDelimited).string(message.playerId);
+        /* string id = 1; */
+        if (message.id !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.id);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -444,10 +442,112 @@ class JoinError$Type extends MessageType<JoinError> {
  * @generated MessageType for protobuf message matchmaker.v1.JoinError
  */
 export const JoinError = new JoinError$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetGameDetailsRequest$Type extends MessageType<GetGameDetailsRequest> {
+    constructor() {
+        super("matchmaker.v1.GetGameDetailsRequest", [
+            { no: 1, name: "game_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<GetGameDetailsRequest>): GetGameDetailsRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.gameId = "";
+        if (value !== undefined)
+            reflectionMergePartial<GetGameDetailsRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetGameDetailsRequest): GetGameDetailsRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string game_id */ 1:
+                    message.gameId = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetGameDetailsRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string game_id = 1; */
+        if (message.gameId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.gameId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message matchmaker.v1.GetGameDetailsRequest
+ */
+export const GetGameDetailsRequest = new GetGameDetailsRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetGameDetailsResponse$Type extends MessageType<GetGameDetailsResponse> {
+    constructor() {
+        super("matchmaker.v1.GetGameDetailsResponse", [
+            { no: 1, name: "game", kind: "message", T: () => Game },
+            { no: 2, name: "url", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<GetGameDetailsResponse>): GetGameDetailsResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.url = "";
+        if (value !== undefined)
+            reflectionMergePartial<GetGameDetailsResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetGameDetailsResponse): GetGameDetailsResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* game.v1.Game game */ 1:
+                    message.game = Game.internalBinaryRead(reader, reader.uint32(), options, message.game);
+                    break;
+                case /* string url */ 2:
+                    message.url = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetGameDetailsResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* game.v1.Game game = 1; */
+        if (message.game)
+            Game.internalBinaryWrite(message.game, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* string url = 2; */
+        if (message.url !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.url);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message matchmaker.v1.GetGameDetailsResponse
+ */
+export const GetGameDetailsResponse = new GetGameDetailsResponse$Type();
 /**
  * @generated ServiceType for protobuf service matchmaker.v1.Matchmaker
  */
 export const Matchmaker = new ServiceType("matchmaker.v1.Matchmaker", [
     { name: "GetCurrentGame", options: {}, I: GetCurrentGameRequest, O: GetCurrentGameResponse },
-    { name: "JoinGame", serverStreaming: true, options: {}, I: JoinGameRequest, O: JoinUpdate }
+    { name: "JoinGame", serverStreaming: true, options: {}, I: JoinGameRequest, O: JoinUpdate },
+    { name: "GetGameDetails", options: {}, I: GetGameDetailsRequest, O: GetGameDetailsResponse }
 ]);
