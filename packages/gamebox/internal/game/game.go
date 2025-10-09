@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"time"
 
-	ws "github.com/tobyrushton/globalfront/packages/gamebox/internal/ws/server"
+	ws "github.com/tobyrushton/globalfront/packages/gamebox/internal/ws"
 	pb "github.com/tobyrushton/globalfront/pb/game/v1"
+	v1 "github.com/tobyrushton/globalfront/pb/messages/v1"
 )
 
 type Game struct {
@@ -14,6 +16,8 @@ type Game struct {
 	game *pb.Game
 
 	wsServer *ws.WsServer
+
+	started bool
 }
 
 func New(port int, game *pb.Game) *Game {
@@ -21,6 +25,7 @@ func New(port int, game *pb.Game) *Game {
 		port:     port,
 		game:     game,
 		wsServer: ws.NewServer(),
+		started:  false,
 	}
 }
 
@@ -33,6 +38,8 @@ func (g *Game) Start() error {
 		Handler: g.wsServer,
 	}
 
+	go g.startGame()
+
 	return s.Serve(l)
 }
 
@@ -42,4 +49,23 @@ func (g *Game) GetId() string {
 
 func (g *Game) GetPort() int {
 	return g.port
+}
+
+func (g *Game) startGame() {
+	for i := 60; i >= 1; i-- {
+		fmt.Println("Starting game in", i, "seconds")
+		g.wsServer.Broadcast(&v1.WebsocketMessage{
+			Type: v1.MessageType_MESSAGE_START_COUNTDOWN,
+			Payload: &v1.WebsocketMessage_StartCountdown{
+				StartCountdown: &v1.StartCountdown{
+					CountdownSeconds: int32(i),
+				},
+			},
+		})
+		time.Sleep(1 * time.Second)
+	}
+	g.wsServer.Broadcast(&v1.WebsocketMessage{
+		Type:    v1.MessageType_MESSAGE_GAME_START,
+		Payload: &v1.WebsocketMessage_GameStart{},
+	})
 }

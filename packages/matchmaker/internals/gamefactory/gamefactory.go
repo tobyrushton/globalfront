@@ -1,7 +1,6 @@
 package gamefactory
 
 import (
-	"math/rand/v2"
 	"time"
 
 	"github.com/google/uuid"
@@ -27,7 +26,7 @@ func New(newGameDelay int) *GameFactory {
 func (gf *GameFactory) createGame() {
 	id := uuid.New().String()
 	currentPlayers := int32(0)
-	maxPlayers := int32(rand.IntN(32))
+	maxPlayers := int32(1)
 	game := &pb.Game{
 		Id:          id,
 		PlayerCount: currentPlayers,

@@ -7,17 +7,17 @@ import (
 	"sync"
 
 	"github.com/coder/websocket"
-	"github.com/tobyrushton/globalfront/packages/gamebox/internal/client"
+	pb "github.com/tobyrushton/globalfront/pb/messages/v1"
 )
 
 type WsServer struct {
 	clientsMu sync.Mutex
-	clients   map[*client.Client]struct{}
+	clients   map[*Client]struct{}
 }
 
 func NewServer() *WsServer {
 	return &WsServer{
-		clients: make(map[*client.Client]struct{}),
+		clients: make(map[*Client]struct{}),
 	}
 }
 
@@ -32,7 +32,7 @@ func (s *WsServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	defer c.CloseNow()
 
-	cl := client.New(c)
+	cl := NewClient(c)
 
 	s.clientsMu.Lock()
 	s.clients[cl] = struct{}{}
@@ -50,7 +50,27 @@ func (s *WsServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
+	ctx := c.CloseRead(context.Background())
+	for {
+		select {
+		case msg := <-cl.sendChannel:
+			err := cl.Send(msg)
+			if err != nil {
+				return
+			}
+		case <-ctx.Done():
+			s.clientsMu.Lock()
+			delete(s.clients, cl)
+			s.clientsMu.Unlock()
+		}
+	}
+}
+
+func (s *WsServer) Broadcast(message *pb.WebsocketMessage) {
 	s.clientsMu.Lock()
-	delete(s.clients, cl)
-	s.clientsMu.Unlock()
+	defer s.clientsMu.Unlock()
+
+	for cl := range s.clients {
+		cl.GetSendChannel() <- message
+	}
 }
