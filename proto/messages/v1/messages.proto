@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option go_package = "github.com/tobyrushton/globalfront/pb/messages/v1";
+
+package messages.v1;
+
+message WebsocketMessage {
+    MessageType type = 1;
+
+    oneof payload {
+        StartCountdown start_countdown = 2;
+        GameStart game_start = 3;
+    }
+}
+
+enum MessageType {
+    MESSAGE_TYPE_UNSPECIFIED = 0;
+    MESSAGE_START_COUNTDOWN = 1;
+    MESSAGE_GAME_START = 2;
+}
+
+message StartCountdown {
+    int32 countdown_seconds = 1;
+}
+
+message GameStart {}
