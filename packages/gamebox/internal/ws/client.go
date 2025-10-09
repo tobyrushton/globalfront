@@ -25,7 +25,7 @@ func (c *Client) Send(message *pb.WebsocketMessage) error {
 	if err != nil {
 		return err
 	}
-	return c.conn.Write(context.Background(), websocket.MessageText, m)
+	return c.conn.Write(context.Background(), websocket.MessageBinary, m)
 }
 
 func (c *Client) GetSendChannel() chan<- *pb.WebsocketMessage {
