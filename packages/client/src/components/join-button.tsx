@@ -21,7 +21,7 @@ export const JoinButton: FC<JoinButtonProps> = ({ game }) => {
                 console.log(response)
                 if (response.update.oneofKind === "serverDetails") {
                     console.log("pushing")
-                    router.replace(`/game/${response.update.serverDetails.id}`)
+                    router.replace(`/game/${response.update.serverDetails.id}?playerId=${response.update.serverDetails.playerId}`)
                 }
             }
         })
