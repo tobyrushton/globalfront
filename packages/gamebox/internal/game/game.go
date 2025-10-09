@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"net"
 	"net/http"
 
 	ws "github.com/tobyrushton/globalfront/packages/gamebox/internal/ws/server"
@@ -24,12 +25,15 @@ func New(port int, game *pb.Game) *Game {
 }
 
 func (g *Game) Start() error {
-	http.HandleFunc("/ws", g.wsServer.ServeWS)
+	l, err := net.Listen("tcp", fmt.Sprintf(":%d", g.port))
+	if err != nil {
+		return err
+	}
+	s := &http.Server{
+		Handler: g.wsServer,
+	}
 
-	return http.ListenAndServe(
-		fmt.Sprintf(":%d", g.port),
-		nil,
-	)
+	return s.Serve(l)
 }
 
 func (g *Game) GetId() string {
