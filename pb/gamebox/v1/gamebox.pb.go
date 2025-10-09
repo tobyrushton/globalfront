@@ -25,6 +25,7 @@ const (
 type CreateGameRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Game          *v1.Game               `protobuf:"bytes,1,opt,name=game,proto3" json:"game,omitempty"`
+	PlayerIds     []string               `protobuf:"bytes,3,rep,name=player_ids,json=playerIds,proto3" json:"player_ids,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -62,6 +63,13 @@ func (*CreateGameRequest) Descriptor() ([]byte, []int) {
 func (x *CreateGameRequest) GetGame() *v1.Game {
 	if x != nil {
 		return x.Game
+	}
+	return nil
+}
+
+func (x *CreateGameRequest) GetPlayerIds() []string {
+	if x != nil {
+		return x.PlayerIds
 	}
 	return nil
 }
@@ -123,9 +131,11 @@ var File_gamebox_v1_gamebox_proto protoreflect.FileDescriptor
 const file_gamebox_v1_gamebox_proto_rawDesc = "" +
 	"\n" +
 	"\x18gamebox/v1/gamebox.proto\x12\n" +
-	"gamebox.v1\x1a\x12game/v1/game.proto\"6\n" +
+	"gamebox.v1\x1a\x12game/v1/game.proto\"U\n" +
 	"\x11CreateGameRequest\x12!\n" +
-	"\x04game\x18\x01 \x01(\v2\r.game.v1.GameR\x04game\"A\n" +
+	"\x04game\x18\x01 \x01(\v2\r.game.v1.GameR\x04game\x12\x1d\n" +
+	"\n" +
+	"player_ids\x18\x03 \x03(\tR\tplayerIds\"A\n" +
 	"\x12CreateGameResponse\x12\x17\n" +
 	"\agame_id\x18\x01 \x01(\tR\x06gameId\x12\x12\n" +
 	"\x04port\x18\x02 \x01(\x05R\x04port2V\n" +
