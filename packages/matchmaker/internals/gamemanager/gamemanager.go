@@ -92,17 +92,15 @@ func (gm *GameManager) JoinGame() (string, error) {
 
 	gm.gamesMu.Unlock()
 	if gm.currentGame.PlayerCount == gm.currentGame.MaxPlayers {
-		gm.startGame()
+		go gm.startGame()
 	}
 
 	return playerID, nil
 }
 
 func (gm *GameManager) startGame() error {
-	fmt.Println("Attempting to start game...")
 	gm.gamesMu.Lock()
-	defer gm.gamesMu.Lock()
-	fmt.Println("obtained lock to start game")
+	defer gm.gamesMu.Unlock()
 
 	conn, err := grpc.NewClient(
 		"gamebox:5432",
@@ -124,7 +122,7 @@ func (gm *GameManager) startGame() error {
 
 	gm.games[res.GameId] = StartedGame{
 		Game: gm.currentGame,
-		Url:  fmt.Sprintf("ws://gamebox:%d/ws", res.Port),
+		Url:  fmt.Sprintf("http://localhost:%d", res.Port),
 	}
 
 	gm.playerMu.Lock()
@@ -157,8 +155,10 @@ func (gm *GameManager) GetUpdateChannel(playerId string) chan Update {
 }
 
 func (gm *GameManager) GetGame(gameId string) (StartedGame, bool) {
+	fmt.Println("Getting game with ID:", gameId)
 	gm.gamesMu.Lock()
 	defer gm.gamesMu.Unlock()
+	fmt.Println("Current games:", gm.games)
 
 	game, exists := gm.games[gameId]
 	return game, exists

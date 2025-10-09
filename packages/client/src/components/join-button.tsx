@@ -1,6 +1,6 @@
 "use client"
 
-import { FC } from "react"
+import { FC, MouseEvent } from "react"
 import { Game } from "@globalfront/pb/game/v1/game"
 import { webClient } from "@/grpc/webClient"
 import { useRouter } from "next/navigation"
@@ -12,14 +12,28 @@ type JoinButtonProps = {
 export const JoinButton: FC<JoinButtonProps> = ({ game }) => {
     const router = useRouter()
 
-    const joinGame = () => {
+    const joinGame = (e: MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault()
         const stream = webClient.joinGame({})
 
         stream.responses.onNext((response) => {
             if (response) {
-                if (response.update.oneofKind === "serverDetails") 
-                    router.push(`/game/${response.update.serverDetails.id}`)
+                console.log(response)
+                if (response.update.oneofKind === "serverDetails") {
+                    console.log("pushing")
+                    router.replace(`/game/${response.update.serverDetails.id}`)
+                }
             }
+        })
+
+        // Add error handler
+        stream.responses.onError((error) => {
+            console.error("Stream error:", error)
+        })
+        
+        // Add complete handler
+        stream.responses.onComplete(() => {
+            console.log("Stream completed")
         })
     }
 

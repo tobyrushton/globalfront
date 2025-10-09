@@ -21,8 +21,10 @@ func NewServer() *WsServer {
 	}
 }
 
-func (s *WsServer) ServeWS(w http.ResponseWriter, r *http.Request) {
-	c, err := websocket.Accept(w, r, nil)
+func (s *WsServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	c, err := websocket.Accept(w, r, &websocket.AcceptOptions{
+		OriginPatterns: []string{"localhost:3000"},
+	})
 
 	if err != nil {
 		http.Error(w, "Could not open websocket connection", http.StatusBadRequest)

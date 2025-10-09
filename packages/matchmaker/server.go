@@ -2,6 +2,7 @@ package matchmaker
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/tobyrushton/globalfront/packages/matchmaker/internals/gamemanager"
 	pb "github.com/tobyrushton/globalfront/pb/matchmaker/v1"
@@ -53,6 +54,8 @@ func (s *MatchmakerServer) JoinGame(req *pb.JoinGameRequest, stream pb.Matchmake
 	if isErrJoining {
 		return nil
 	}
+
+	fmt.Println("Player joined with ID:", playerID)
 
 	select {
 	case <-stream.Context().Done():
