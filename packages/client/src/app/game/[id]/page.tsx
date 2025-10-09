@@ -5,12 +5,14 @@ import { serverClient } from "@/grpc/client";
 import { GameProvider } from "@/components/game/provider";
 
 type Props = {
-    params: {
+    params: Promise<{
         id: string;
-    }
+    }>
 }
 
-const GamePage: FC<Props> = async ({ params: { id }}) => {
+const GamePage: FC<Props> = async ({ params }) => {
+    console.log("test")
+    const { id } = await params
     const res = await serverClient.getGameDetails({ gameId: id })
     // TODO: handle res
     return (
