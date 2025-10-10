@@ -81,6 +81,66 @@ func (x *Game) GetMaxPlayers() int32 {
 	return 0
 }
 
+type Player struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Color         string                 `protobuf:"bytes,2,opt,name=color,proto3" json:"color,omitempty"`
+	TroopCount    int32                  `protobuf:"varint,3,opt,name=troop_count,json=troopCount,proto3" json:"troop_count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Player) Reset() {
+	*x = Player{}
+	mi := &file_game_v1_game_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Player) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Player) ProtoMessage() {}
+
+func (x *Player) ProtoReflect() protoreflect.Message {
+	mi := &file_game_v1_game_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Player.ProtoReflect.Descriptor instead.
+func (*Player) Descriptor() ([]byte, []int) {
+	return file_game_v1_game_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *Player) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Player) GetColor() string {
+	if x != nil {
+		return x.Color
+	}
+	return ""
+}
+
+func (x *Player) GetTroopCount() int32 {
+	if x != nil {
+		return x.TroopCount
+	}
+	return 0
+}
+
 var File_game_v1_game_proto protoreflect.FileDescriptor
 
 const file_game_v1_game_proto_rawDesc = "" +
@@ -90,7 +150,12 @@ const file_game_v1_game_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12!\n" +
 	"\fplayer_count\x18\x02 \x01(\x05R\vplayerCount\x12\x1f\n" +
 	"\vmax_players\x18\x03 \x01(\x05R\n" +
-	"maxPlayersB/Z-github.com/tobyrushton/globalfront/pb/game/v1b\x06proto3"
+	"maxPlayers\"O\n" +
+	"\x06Player\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
+	"\x05color\x18\x02 \x01(\tR\x05color\x12\x1f\n" +
+	"\vtroop_count\x18\x03 \x01(\x05R\n" +
+	"troopCountB/Z-github.com/tobyrushton/globalfront/pb/game/v1b\x06proto3"
 
 var (
 	file_game_v1_game_proto_rawDescOnce sync.Once
@@ -104,9 +169,10 @@ func file_game_v1_game_proto_rawDescGZIP() []byte {
 	return file_game_v1_game_proto_rawDescData
 }
 
-var file_game_v1_game_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_game_v1_game_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_game_v1_game_proto_goTypes = []any{
-	(*Game)(nil), // 0: game.v1.Game
+	(*Game)(nil),   // 0: game.v1.Game
+	(*Player)(nil), // 1: game.v1.Player
 }
 var file_game_v1_game_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -127,7 +193,7 @@ func file_game_v1_game_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_game_v1_game_proto_rawDesc), len(file_game_v1_game_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
