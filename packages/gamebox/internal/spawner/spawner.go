@@ -23,7 +23,7 @@ func New() *Spawner {
 	}
 }
 
-func (s *Spawner) Spawn(gm *pb.Game) (*game.Game, error) {
+func (s *Spawner) Spawn(gm *pb.Game, playerIds []string) (*game.Game, error) {
 	s.gamesMu.Lock()
 	defer s.gamesMu.Unlock()
 
@@ -36,7 +36,7 @@ func (s *Spawner) Spawn(gm *pb.Game) (*game.Game, error) {
 		return nil, errors.New("no free ports available")
 	}
 
-	newGame := game.New(port, gm)
+	newGame := game.New(port, gm, playerIds)
 	go newGame.Start()
 
 	s.games[gm.Id] = newGame

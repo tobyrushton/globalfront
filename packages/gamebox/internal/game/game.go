@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"sync"
 	"time"
 
 	ws "github.com/tobyrushton/globalfront/packages/gamebox/internal/ws"
@@ -18,14 +19,29 @@ type Game struct {
 	wsServer *ws.WsServer
 
 	started bool
+
+	msgChan chan *v1.WebsocketMessage
+
+	playersMu sync.Mutex
+	players   map[string]*ws.Client
 }
 
-func New(port int, game *pb.Game) *Game {
+func New(port int, game *pb.Game, players []string) *Game {
+	playerMap := make(map[string]*ws.Client)
+
+	for _, player := range players {
+		playerMap[player] = nil
+	}
+
+	msgChan := make(chan *v1.WebsocketMessage, 100)
+
 	return &Game{
 		port:     port,
 		game:     game,
-		wsServer: ws.NewServer(),
+		wsServer: ws.NewServer(msgChan),
 		started:  false,
+		players:  playerMap,
+		msgChan:  msgChan,
 	}
 }
 
@@ -37,6 +53,13 @@ func (g *Game) Start() error {
 	s := &http.Server{
 		Handler: g.wsServer,
 	}
+
+	go func() {
+		for {
+			msg := <-g.msgChan
+			fmt.Println("Received message:", msg)
+		}
+	}()
 
 	go g.startGame()
 

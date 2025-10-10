@@ -8,16 +8,20 @@ import (
 
 	"github.com/coder/websocket"
 	pb "github.com/tobyrushton/globalfront/pb/messages/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 type WsServer struct {
 	clientsMu sync.Mutex
 	clients   map[*Client]struct{}
+
+	msgChan chan *pb.WebsocketMessage
 }
 
-func NewServer() *WsServer {
+func NewServer(msgChan chan *pb.WebsocketMessage) *WsServer {
 	return &WsServer{
 		clients: make(map[*Client]struct{}),
+		msgChan: msgChan,
 	}
 }
 
@@ -41,12 +45,16 @@ func (s *WsServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// read loop
 	go func() {
 		for {
-			_, msg, err := c.Read(context.Background())
+			_, data, err := c.Read(context.Background())
 			if err != nil {
 				break
 			}
-			// do something with msg
-			fmt.Println(msg)
+			var msg pb.WebsocketMessage
+			if err := proto.Unmarshal(data, &msg); err != nil {
+				fmt.Println("Failed to unmarshal message:", err)
+			} else {
+				s.msgChan <- &msg
+			}
 		}
 	}()
 
