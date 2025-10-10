@@ -4,6 +4,8 @@ option go_package = "github.com/tobyrushton/globalfront/pb/messages/v1";
 
 package messages.v1;
 
+import "game/v1/game.proto";
+
 message WebsocketMessage {
     MessageType type = 1;
 
@@ -29,4 +31,8 @@ message GameStart {}
 
 message JoinGame {
     string player_id = 1;
+}
+
+message JoinGameResponse {
+    repeated game.v1.Player players = 1;
 }

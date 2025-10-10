@@ -10,6 +10,7 @@ import { UnknownFieldHandler } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType as MessageType$ } from "@protobuf-ts/runtime";
+import { Player } from "../../game/v1/game";
 /**
  * @generated from protobuf message messages.v1.WebsocketMessage
  */
@@ -65,6 +66,15 @@ export interface JoinGame {
      * @generated from protobuf field: string player_id = 1
      */
     playerId: string;
+}
+/**
+ * @generated from protobuf message messages.v1.JoinGameResponse
+ */
+export interface JoinGameResponse {
+    /**
+     * @generated from protobuf field: repeated game.v1.Player players = 1
+     */
+    players: Player[];
 }
 /**
  * @generated from protobuf enum messages.v1.MessageType
@@ -297,3 +307,50 @@ class JoinGame$Type extends MessageType$<JoinGame> {
  * @generated MessageType for protobuf message messages.v1.JoinGame
  */
 export const JoinGame = new JoinGame$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class JoinGameResponse$Type extends MessageType$<JoinGameResponse> {
+    constructor() {
+        super("messages.v1.JoinGameResponse", [
+            { no: 1, name: "players", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => Player }
+        ]);
+    }
+    create(value?: PartialMessage<JoinGameResponse>): JoinGameResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.players = [];
+        if (value !== undefined)
+            reflectionMergePartial<JoinGameResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: JoinGameResponse): JoinGameResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated game.v1.Player players */ 1:
+                    message.players.push(Player.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: JoinGameResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated game.v1.Player players = 1; */
+        for (let i = 0; i < message.players.length; i++)
+            Player.internalBinaryWrite(message.players[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message messages.v1.JoinGameResponse
+ */
+export const JoinGameResponse = new JoinGameResponse$Type();

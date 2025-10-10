@@ -7,6 +7,7 @@
 package v1
 
 import (
+	v1 "github.com/tobyrushton/globalfront/pb/game/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -303,11 +304,55 @@ func (x *JoinGame) GetPlayerId() string {
 	return ""
 }
 
+type JoinGameResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Players       []*v1.Player           `protobuf:"bytes,1,rep,name=players,proto3" json:"players,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *JoinGameResponse) Reset() {
+	*x = JoinGameResponse{}
+	mi := &file_messages_v1_messages_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *JoinGameResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*JoinGameResponse) ProtoMessage() {}
+
+func (x *JoinGameResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_messages_v1_messages_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use JoinGameResponse.ProtoReflect.Descriptor instead.
+func (*JoinGameResponse) Descriptor() ([]byte, []int) {
+	return file_messages_v1_messages_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *JoinGameResponse) GetPlayers() []*v1.Player {
+	if x != nil {
+		return x.Players
+	}
+	return nil
+}
+
 var File_messages_v1_messages_proto protoreflect.FileDescriptor
 
 const file_messages_v1_messages_proto_rawDesc = "" +
 	"\n" +
-	"\x1amessages/v1/messages.proto\x12\vmessages.v1\"\x82\x02\n" +
+	"\x1amessages/v1/messages.proto\x12\vmessages.v1\x1a\x12game/v1/game.proto\"\x82\x02\n" +
 	"\x10WebsocketMessage\x12,\n" +
 	"\x04type\x18\x01 \x01(\x0e2\x18.messages.v1.MessageTypeR\x04type\x12F\n" +
 	"\x0fstart_countdown\x18\x02 \x01(\v2\x1b.messages.v1.StartCountdownH\x00R\x0estartCountdown\x127\n" +
@@ -319,7 +364,9 @@ const file_messages_v1_messages_proto_rawDesc = "" +
 	"\x11countdown_seconds\x18\x01 \x01(\x05R\x10countdownSeconds\"\v\n" +
 	"\tGameStart\"'\n" +
 	"\bJoinGame\x12\x1b\n" +
-	"\tplayer_id\x18\x01 \x01(\tR\bplayerId*w\n" +
+	"\tplayer_id\x18\x01 \x01(\tR\bplayerId\"=\n" +
+	"\x10JoinGameResponse\x12)\n" +
+	"\aplayers\x18\x01 \x03(\v2\x0f.game.v1.PlayerR\aplayers*w\n" +
 	"\vMessageType\x12\x1c\n" +
 	"\x18MESSAGE_TYPE_UNSPECIFIED\x10\x00\x12\x1b\n" +
 	"\x17MESSAGE_START_COUNTDOWN\x10\x01\x12\x16\n" +
@@ -339,24 +386,27 @@ func file_messages_v1_messages_proto_rawDescGZIP() []byte {
 }
 
 var file_messages_v1_messages_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_messages_v1_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_messages_v1_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_messages_v1_messages_proto_goTypes = []any{
 	(MessageType)(0),         // 0: messages.v1.MessageType
 	(*WebsocketMessage)(nil), // 1: messages.v1.WebsocketMessage
 	(*StartCountdown)(nil),   // 2: messages.v1.StartCountdown
 	(*GameStart)(nil),        // 3: messages.v1.GameStart
 	(*JoinGame)(nil),         // 4: messages.v1.JoinGame
+	(*JoinGameResponse)(nil), // 5: messages.v1.JoinGameResponse
+	(*v1.Player)(nil),        // 6: game.v1.Player
 }
 var file_messages_v1_messages_proto_depIdxs = []int32{
 	0, // 0: messages.v1.WebsocketMessage.type:type_name -> messages.v1.MessageType
 	2, // 1: messages.v1.WebsocketMessage.start_countdown:type_name -> messages.v1.StartCountdown
 	3, // 2: messages.v1.WebsocketMessage.game_start:type_name -> messages.v1.GameStart
 	4, // 3: messages.v1.WebsocketMessage.join_game:type_name -> messages.v1.JoinGame
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	6, // 4: messages.v1.JoinGameResponse.players:type_name -> game.v1.Player
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_messages_v1_messages_proto_init() }
@@ -375,7 +425,7 @@ func file_messages_v1_messages_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_messages_v1_messages_proto_rawDesc), len(file_messages_v1_messages_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   4,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
