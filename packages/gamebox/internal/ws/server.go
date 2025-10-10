@@ -99,7 +99,9 @@ func (s *WsServer) Broadcast(message *pb.WebsocketMessage) {
 	defer s.clientsMu.Unlock()
 
 	for _, cl := range s.clients {
-		cl.GetSendChannel() <- message
+		if cl != nil {
+			cl.GetSendChannel() <- message
+		}
 	}
 }
 

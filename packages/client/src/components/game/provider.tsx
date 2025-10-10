@@ -2,6 +2,7 @@
 
 import { FC, PropsWithChildren, createContext, useContext, useEffect } from "react"
 import { WebsocketMessage, MessageType, JoinGame } from "@globalfront/pb/messages/v1/messages"
+import { useStatus } from "./status-provider"
 
 type GameProviderProps = {
     url: string
@@ -13,6 +14,15 @@ type TGameContext = {}
 const GameContext = createContext<TGameContext | null>(null)
 
 export const GameProvider: FC<PropsWithChildren<GameProviderProps>> = ({ children, url, playerId }) => {
+    const { setCountdown } = useStatus()
+
+    const handleMessage = (msg: WebsocketMessage) => {
+        switch(msg.payload.oneofKind) {
+            case "startCountdown":
+                setCountdown(msg.payload.startCountdown.countdownSeconds)
+        }
+    }
+
     useEffect(() => {
         const socket = new WebSocket(url)
         socket.binaryType = "arraybuffer"
@@ -33,7 +43,7 @@ export const GameProvider: FC<PropsWithChildren<GameProviderProps>> = ({ childre
             console.log(event)
             if (event.data instanceof ArrayBuffer) {
                 const message = WebsocketMessage.fromBinary(new Uint8Array(event.data))
-                console.log("Received message from server:", message)
+                handleMessage(message)
             }
         }
 

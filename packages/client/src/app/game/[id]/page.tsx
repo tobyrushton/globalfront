@@ -3,6 +3,7 @@ import { GameWrapper } from "@/components/game/wrapper";
 import { GameBoard } from "@/components/game/board";
 import { serverClient } from "@/grpc/client";
 import { GameProvider } from "@/components/game/provider";
+import { StatusProvider } from "@/components/game/status-provider";
 
 type Props = {
     params: Promise<{
@@ -20,11 +21,13 @@ const GamePage: FC<Props> = async ({ params, searchParams }) => {
     // TODO: handle res
     console.log("game url:",  res.response.url)
     return (
-        <GameProvider url={res.response.url} playerId={sp?.playerId as string}>
-            <GameWrapper>
-                <GameBoard />
-            </GameWrapper>
-        </GameProvider>
+        <StatusProvider>
+            <GameProvider url={res.response.url} playerId={sp?.playerId as string}>
+                <GameWrapper>
+                    <GameBoard />
+                </GameWrapper>
+            </GameProvider>
+        </StatusProvider>
     )    
 }
 
