@@ -130,3 +130,17 @@ func (s *WsServer) addClient(playerId string, cl *Client) error {
 	}
 	return nil
 }
+
+func (s *WsServer) SendToPlayer(playerId string, message *pb.WebsocketMessage) error {
+	s.clientsMu.Lock()
+	defer s.clientsMu.Unlock()
+
+	if cl, exists := s.clients[playerId]; !exists {
+		return fmt.Errorf("player ID %s not recognized", playerId)
+	} else if cl == nil {
+		return fmt.Errorf("player ID %s has no connected client", playerId)
+	} else {
+		cl.GetSendChannel() <- message
+	}
+	return nil
+}

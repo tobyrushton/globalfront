@@ -8,6 +8,7 @@ import (
 	"time"
 
 	ws "github.com/tobyrushton/globalfront/packages/gamebox/internal/ws"
+	"github.com/tobyrushton/globalfront/packages/gamebox/utils"
 	pb "github.com/tobyrushton/globalfront/pb/game/v1"
 	v1 "github.com/tobyrushton/globalfront/pb/messages/v1"
 )
@@ -23,14 +24,18 @@ type Game struct {
 	msgChan chan *v1.WebsocketMessage
 
 	playersMu sync.Mutex
-	players   map[string]*ws.Client
+	players   map[string]*pb.Player
 }
 
 func New(port int, game *pb.Game, players []string) *Game {
-	playerMap := make(map[string]*ws.Client)
+	playerMap := make(map[string]*pb.Player)
 
 	for _, player := range players {
-		playerMap[player] = nil
+		playerMap[player] = &pb.Player{
+			Id:         player,
+			Color:      utils.RandomColor(),
+			TroopCount: 3000,
+		}
 	}
 
 	msgChan := make(chan *v1.WebsocketMessage, 100)
@@ -57,7 +62,7 @@ func (g *Game) Start() error {
 	go func() {
 		for {
 			msg := <-g.msgChan
-			fmt.Println("Received message:", msg)
+			g.handleMsg(msg)
 		}
 	}()
 
@@ -91,4 +96,37 @@ func (g *Game) startGame() {
 		Type:    v1.MessageType_MESSAGE_GAME_START,
 		Payload: &v1.WebsocketMessage_GameStart{},
 	})
+}
+
+func (g *Game) handleMsg(msg *v1.WebsocketMessage) {
+	switch p := msg.Payload.(type) {
+	case *v1.WebsocketMessage_JoinGame:
+		err := g.joinPlayer(p.JoinGame.PlayerId)
+		if err != nil {
+			fmt.Println("Error joining player:", err)
+		}
+	default:
+		fmt.Println("Unhandled message type:", msg.Type)
+	}
+}
+
+func (g *Game) joinPlayer(playerId string) error {
+	g.playersMu.Lock()
+	defer g.playersMu.Unlock()
+
+	if _, ok := g.players[playerId]; !ok {
+		return fmt.Errorf("player %s not in game", playerId)
+	}
+
+	msg := &v1.WebsocketMessage{
+		Type: v1.MessageType_MESSAGE_JOIN_GAME_RESPONSE,
+		Payload: &v1.WebsocketMessage_JoinGameResponse{
+			JoinGameResponse: &v1.JoinGameResponse{
+				Players: utils.FlattenMap(g.players),
+			},
+		},
+	}
+	g.wsServer.SendToPlayer(playerId, msg)
+
+	return nil
 }
