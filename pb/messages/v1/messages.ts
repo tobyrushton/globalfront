@@ -34,6 +34,12 @@ export interface WebsocketMessage {
          */
         gameStart: GameStart;
     } | {
+        oneofKind: "joinGame";
+        /**
+         * @generated from protobuf field: messages.v1.JoinGame join_game = 4
+         */
+        joinGame: JoinGame;
+    } | {
         oneofKind: undefined;
     };
 }
@@ -52,6 +58,15 @@ export interface StartCountdown {
 export interface GameStart {
 }
 /**
+ * @generated from protobuf message messages.v1.JoinGame
+ */
+export interface JoinGame {
+    /**
+     * @generated from protobuf field: string player_id = 1
+     */
+    playerId: string;
+}
+/**
  * @generated from protobuf enum messages.v1.MessageType
  */
 export enum MessageType {
@@ -66,7 +81,11 @@ export enum MessageType {
     /**
      * @generated from protobuf enum value: MESSAGE_GAME_START = 2;
      */
-    MESSAGE_GAME_START = 2
+    MESSAGE_GAME_START = 2,
+    /**
+     * @generated from protobuf enum value: MESSAGE_JOIN_GAME = 3;
+     */
+    MESSAGE_JOIN_GAME = 3
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class WebsocketMessage$Type extends MessageType$<WebsocketMessage> {
@@ -74,7 +93,8 @@ class WebsocketMessage$Type extends MessageType$<WebsocketMessage> {
         super("messages.v1.WebsocketMessage", [
             { no: 1, name: "type", kind: "enum", T: () => ["messages.v1.MessageType", MessageType] },
             { no: 2, name: "start_countdown", kind: "message", oneof: "payload", T: () => StartCountdown },
-            { no: 3, name: "game_start", kind: "message", oneof: "payload", T: () => GameStart }
+            { no: 3, name: "game_start", kind: "message", oneof: "payload", T: () => GameStart },
+            { no: 4, name: "join_game", kind: "message", oneof: "payload", T: () => JoinGame }
         ]);
     }
     create(value?: PartialMessage<WebsocketMessage>): WebsocketMessage {
@@ -105,6 +125,12 @@ class WebsocketMessage$Type extends MessageType$<WebsocketMessage> {
                         gameStart: GameStart.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).gameStart)
                     };
                     break;
+                case /* messages.v1.JoinGame join_game */ 4:
+                    message.payload = {
+                        oneofKind: "joinGame",
+                        joinGame: JoinGame.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).joinGame)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -126,6 +152,9 @@ class WebsocketMessage$Type extends MessageType$<WebsocketMessage> {
         /* messages.v1.GameStart game_start = 3; */
         if (message.payload.oneofKind === "gameStart")
             GameStart.internalBinaryWrite(message.payload.gameStart, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        /* messages.v1.JoinGame join_game = 4; */
+        if (message.payload.oneofKind === "joinGame")
+            JoinGame.internalBinaryWrite(message.payload.joinGame, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -221,3 +250,50 @@ class GameStart$Type extends MessageType$<GameStart> {
  * @generated MessageType for protobuf message messages.v1.GameStart
  */
 export const GameStart = new GameStart$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class JoinGame$Type extends MessageType$<JoinGame> {
+    constructor() {
+        super("messages.v1.JoinGame", [
+            { no: 1, name: "player_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<JoinGame>): JoinGame {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.playerId = "";
+        if (value !== undefined)
+            reflectionMergePartial<JoinGame>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: JoinGame): JoinGame {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string player_id */ 1:
+                    message.playerId = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: JoinGame, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string player_id = 1; */
+        if (message.playerId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.playerId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message messages.v1.JoinGame
+ */
+export const JoinGame = new JoinGame$Type();

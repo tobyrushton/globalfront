@@ -27,6 +27,7 @@ const (
 	MessageType_MESSAGE_TYPE_UNSPECIFIED MessageType = 0
 	MessageType_MESSAGE_START_COUNTDOWN  MessageType = 1
 	MessageType_MESSAGE_GAME_START       MessageType = 2
+	MessageType_MESSAGE_JOIN_GAME        MessageType = 3
 )
 
 // Enum value maps for MessageType.
@@ -35,11 +36,13 @@ var (
 		0: "MESSAGE_TYPE_UNSPECIFIED",
 		1: "MESSAGE_START_COUNTDOWN",
 		2: "MESSAGE_GAME_START",
+		3: "MESSAGE_JOIN_GAME",
 	}
 	MessageType_value = map[string]int32{
 		"MESSAGE_TYPE_UNSPECIFIED": 0,
 		"MESSAGE_START_COUNTDOWN":  1,
 		"MESSAGE_GAME_START":       2,
+		"MESSAGE_JOIN_GAME":        3,
 	}
 )
 
@@ -77,6 +80,7 @@ type WebsocketMessage struct {
 	//
 	//	*WebsocketMessage_StartCountdown
 	//	*WebsocketMessage_GameStart
+	//	*WebsocketMessage_JoinGame
 	Payload       isWebsocketMessage_Payload `protobuf_oneof:"payload"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -144,6 +148,15 @@ func (x *WebsocketMessage) GetGameStart() *GameStart {
 	return nil
 }
 
+func (x *WebsocketMessage) GetJoinGame() *JoinGame {
+	if x != nil {
+		if x, ok := x.Payload.(*WebsocketMessage_JoinGame); ok {
+			return x.JoinGame
+		}
+	}
+	return nil
+}
+
 type isWebsocketMessage_Payload interface {
 	isWebsocketMessage_Payload()
 }
@@ -156,9 +169,15 @@ type WebsocketMessage_GameStart struct {
 	GameStart *GameStart `protobuf:"bytes,3,opt,name=game_start,json=gameStart,proto3,oneof"`
 }
 
+type WebsocketMessage_JoinGame struct {
+	JoinGame *JoinGame `protobuf:"bytes,4,opt,name=join_game,json=joinGame,proto3,oneof"`
+}
+
 func (*WebsocketMessage_StartCountdown) isWebsocketMessage_Payload() {}
 
 func (*WebsocketMessage_GameStart) isWebsocketMessage_Payload() {}
+
+func (*WebsocketMessage_JoinGame) isWebsocketMessage_Payload() {}
 
 type StartCountdown struct {
 	state            protoimpl.MessageState `protogen:"open.v1"`
@@ -240,24 +259,72 @@ func (*GameStart) Descriptor() ([]byte, []int) {
 	return file_messages_v1_messages_proto_rawDescGZIP(), []int{2}
 }
 
+type JoinGame struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PlayerId      string                 `protobuf:"bytes,1,opt,name=player_id,json=playerId,proto3" json:"player_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *JoinGame) Reset() {
+	*x = JoinGame{}
+	mi := &file_messages_v1_messages_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *JoinGame) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*JoinGame) ProtoMessage() {}
+
+func (x *JoinGame) ProtoReflect() protoreflect.Message {
+	mi := &file_messages_v1_messages_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use JoinGame.ProtoReflect.Descriptor instead.
+func (*JoinGame) Descriptor() ([]byte, []int) {
+	return file_messages_v1_messages_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *JoinGame) GetPlayerId() string {
+	if x != nil {
+		return x.PlayerId
+	}
+	return ""
+}
+
 var File_messages_v1_messages_proto protoreflect.FileDescriptor
 
 const file_messages_v1_messages_proto_rawDesc = "" +
 	"\n" +
-	"\x1amessages/v1/messages.proto\x12\vmessages.v1\"\xcc\x01\n" +
+	"\x1amessages/v1/messages.proto\x12\vmessages.v1\"\x82\x02\n" +
 	"\x10WebsocketMessage\x12,\n" +
 	"\x04type\x18\x01 \x01(\x0e2\x18.messages.v1.MessageTypeR\x04type\x12F\n" +
 	"\x0fstart_countdown\x18\x02 \x01(\v2\x1b.messages.v1.StartCountdownH\x00R\x0estartCountdown\x127\n" +
 	"\n" +
-	"game_start\x18\x03 \x01(\v2\x16.messages.v1.GameStartH\x00R\tgameStartB\t\n" +
+	"game_start\x18\x03 \x01(\v2\x16.messages.v1.GameStartH\x00R\tgameStart\x124\n" +
+	"\tjoin_game\x18\x04 \x01(\v2\x15.messages.v1.JoinGameH\x00R\bjoinGameB\t\n" +
 	"\apayload\"=\n" +
 	"\x0eStartCountdown\x12+\n" +
 	"\x11countdown_seconds\x18\x01 \x01(\x05R\x10countdownSeconds\"\v\n" +
-	"\tGameStart*`\n" +
+	"\tGameStart\"'\n" +
+	"\bJoinGame\x12\x1b\n" +
+	"\tplayer_id\x18\x01 \x01(\tR\bplayerId*w\n" +
 	"\vMessageType\x12\x1c\n" +
 	"\x18MESSAGE_TYPE_UNSPECIFIED\x10\x00\x12\x1b\n" +
 	"\x17MESSAGE_START_COUNTDOWN\x10\x01\x12\x16\n" +
-	"\x12MESSAGE_GAME_START\x10\x02B3Z1github.com/tobyrushton/globalfront/pb/messages/v1b\x06proto3"
+	"\x12MESSAGE_GAME_START\x10\x02\x12\x15\n" +
+	"\x11MESSAGE_JOIN_GAME\x10\x03B3Z1github.com/tobyrushton/globalfront/pb/messages/v1b\x06proto3"
 
 var (
 	file_messages_v1_messages_proto_rawDescOnce sync.Once
@@ -272,22 +339,24 @@ func file_messages_v1_messages_proto_rawDescGZIP() []byte {
 }
 
 var file_messages_v1_messages_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_messages_v1_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_messages_v1_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_messages_v1_messages_proto_goTypes = []any{
 	(MessageType)(0),         // 0: messages.v1.MessageType
 	(*WebsocketMessage)(nil), // 1: messages.v1.WebsocketMessage
 	(*StartCountdown)(nil),   // 2: messages.v1.StartCountdown
 	(*GameStart)(nil),        // 3: messages.v1.GameStart
+	(*JoinGame)(nil),         // 4: messages.v1.JoinGame
 }
 var file_messages_v1_messages_proto_depIdxs = []int32{
 	0, // 0: messages.v1.WebsocketMessage.type:type_name -> messages.v1.MessageType
 	2, // 1: messages.v1.WebsocketMessage.start_countdown:type_name -> messages.v1.StartCountdown
 	3, // 2: messages.v1.WebsocketMessage.game_start:type_name -> messages.v1.GameStart
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	4, // 3: messages.v1.WebsocketMessage.join_game:type_name -> messages.v1.JoinGame
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_messages_v1_messages_proto_init() }
@@ -298,6 +367,7 @@ func file_messages_v1_messages_proto_init() {
 	file_messages_v1_messages_proto_msgTypes[0].OneofWrappers = []any{
 		(*WebsocketMessage_StartCountdown)(nil),
 		(*WebsocketMessage_GameStart)(nil),
+		(*WebsocketMessage_JoinGame)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -305,7 +375,7 @@ func file_messages_v1_messages_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_messages_v1_messages_proto_rawDesc), len(file_messages_v1_messages_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

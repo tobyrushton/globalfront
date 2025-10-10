@@ -10,6 +10,7 @@ message WebsocketMessage {
     oneof payload {
         StartCountdown start_countdown = 2;
         GameStart game_start = 3;
+        JoinGame join_game = 4;
     }
 }
 
@@ -17,6 +18,7 @@ enum MessageType {
     MESSAGE_TYPE_UNSPECIFIED = 0;
     MESSAGE_START_COUNTDOWN = 1;
     MESSAGE_GAME_START = 2;
+    MESSAGE_JOIN_GAME = 3;
 }
 
 message StartCountdown {
@@ -24,3 +26,7 @@ message StartCountdown {
 }
 
 message GameStart {}
+
+message JoinGame {
+    string player_id = 1;
+}
