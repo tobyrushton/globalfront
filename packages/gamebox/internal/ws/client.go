@@ -1,9 +1,7 @@
 package ws
 
 import (
-	"context"
-
-	"github.com/coder/websocket"
+	"github.com/gorilla/websocket"
 	pb "github.com/tobyrushton/globalfront/pb/messages/v1"
 	"google.golang.org/protobuf/proto"
 )
@@ -11,6 +9,8 @@ import (
 type Client struct {
 	conn        *websocket.Conn
 	sendChannel chan *pb.WebsocketMessage
+
+	playerId string
 }
 
 func NewClient(c *websocket.Conn) *Client {
@@ -25,9 +25,17 @@ func (c *Client) Send(message *pb.WebsocketMessage) error {
 	if err != nil {
 		return err
 	}
-	return c.conn.Write(context.Background(), websocket.MessageBinary, m)
+	return c.conn.WriteMessage(websocket.BinaryMessage, m)
 }
 
 func (c *Client) GetSendChannel() chan<- *pb.WebsocketMessage {
 	return c.sendChannel
+}
+
+func (c *Client) PlayerId() string {
+	return c.playerId
+}
+
+func (c *Client) SetPlayerId(id string) {
+	c.playerId = id
 }

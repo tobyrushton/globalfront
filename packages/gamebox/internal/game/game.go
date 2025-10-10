@@ -38,7 +38,7 @@ func New(port int, game *pb.Game, players []string) *Game {
 	return &Game{
 		port:     port,
 		game:     game,
-		wsServer: ws.NewServer(msgChan),
+		wsServer: ws.NewServer(msgChan, players),
 		started:  false,
 		players:  playerMap,
 		msgChan:  msgChan,

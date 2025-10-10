@@ -1,24 +1,32 @@
 "use client"
 
 import { FC, PropsWithChildren, createContext, useContext, useEffect } from "react"
-import { WebsocketMessage } from "@globalfront/pb/messages/v1/messages"
+import { WebsocketMessage, MessageType, JoinGame } from "@globalfront/pb/messages/v1/messages"
 
 type GameProviderProps = {
     url: string
+    playerId: string
 }
 
 type TGameContext = {}
 
 const GameContext = createContext<TGameContext | null>(null)
 
-export const GameProvider: FC<PropsWithChildren<GameProviderProps>> = ({ children, url }) => {
+export const GameProvider: FC<PropsWithChildren<GameProviderProps>> = ({ children, url, playerId }) => {
     useEffect(() => {
-        console.log("Connecting to game server at", url)
         const socket = new WebSocket(url)
         socket.binaryType = "arraybuffer"
 
         socket.onopen = () => {
-            console.log("Connected to game server")
+            const msg = WebsocketMessage.create({
+                type: MessageType.MESSAGE_JOIN_GAME,
+                payload: {
+                    oneofKind: "joinGame",
+                    joinGame: JoinGame.create({ playerId })
+                }
+            })
+            console.log("Sending join game message:", msg)
+            socket.send(WebsocketMessage.toBinary(msg))
         }
 
         socket.onmessage = (event) => {

@@ -112,8 +112,13 @@ func (gm *GameManager) startGame() error {
 	defer conn.Close()
 
 	client := pb.NewGameboxClient(conn)
+	playerIds := make([]string, 0, len(gm.players))
+	for playerId := range gm.players {
+		playerIds = append(playerIds, playerId)
+	}
 	req := &pb.CreateGameRequest{
-		Game: gm.currentGame,
+		Game:      gm.currentGame,
+		PlayerIds: playerIds,
 	}
 	res, err := client.CreateGame(gm.ctx, req)
 	if err != nil {
@@ -122,7 +127,7 @@ func (gm *GameManager) startGame() error {
 
 	gm.games[res.GameId] = StartedGame{
 		Game: gm.currentGame,
-		Url:  fmt.Sprintf("http://localhost:%d", res.Port),
+		Url:  fmt.Sprintf("ws://localhost:%d", res.Port),
 	}
 
 	gm.playerMu.Lock()

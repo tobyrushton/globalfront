@@ -8,15 +8,19 @@ type Props = {
     params: Promise<{
         id: string;
     }>
+    searchParams: Promise<{
+        [key: string]: string | string[] | undefined
+    }>
 }
 
-const GamePage: FC<Props> = async ({ params }) => {
-    console.log("test")
+const GamePage: FC<Props> = async ({ params, searchParams }) => {
     const { id } = await params
+    const sp = await searchParams
     const res = await serverClient.getGameDetails({ gameId: id })
     // TODO: handle res
+    console.log("game url:",  res.response.url)
     return (
-        <GameProvider url={res.response.url}>
+        <GameProvider url={res.response.url} playerId={sp?.playerId as string}>
             <GameWrapper>
                 <GameBoard />
             </GameWrapper>

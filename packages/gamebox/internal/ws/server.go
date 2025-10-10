@@ -1,64 +1,84 @@
 package ws
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"sync"
 
-	"github.com/coder/websocket"
+	"github.com/gorilla/websocket"
 	pb "github.com/tobyrushton/globalfront/pb/messages/v1"
 	"google.golang.org/protobuf/proto"
 )
 
 type WsServer struct {
 	clientsMu sync.Mutex
-	clients   map[*Client]struct{}
+	clients   map[string]*Client
 
 	msgChan chan *pb.WebsocketMessage
 }
 
-func NewServer(msgChan chan *pb.WebsocketMessage) *WsServer {
+var upgrader = websocket.Upgrader{
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
+
+func NewServer(msgChan chan *pb.WebsocketMessage, playerIds []string) *WsServer {
+	clients := make(map[string]*Client)
+	for _, id := range playerIds {
+		clients[id] = nil
+	}
 	return &WsServer{
-		clients: make(map[*Client]struct{}),
+		clients: clients,
 		msgChan: msgChan,
 	}
 }
 
 func (s *WsServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	c, err := websocket.Accept(w, r, &websocket.AcceptOptions{
-		OriginPatterns: []string{"localhost:3000"},
-	})
+	c, err := upgrader.Upgrade(w, r, nil)
 
 	if err != nil {
 		http.Error(w, "Could not open websocket connection", http.StatusBadRequest)
 		return
 	}
-	defer c.CloseNow()
+	defer c.Close()
 
 	cl := NewClient(c)
-
-	s.clientsMu.Lock()
-	s.clients[cl] = struct{}{}
-	s.clientsMu.Unlock()
+	done := make(chan struct{})
 
 	// read loop
 	go func() {
-		for {
-			_, data, err := c.Read(context.Background())
+		msg, err := s.readMsg(c)
+		if err != nil {
+			close(done)
+			return
+		}
+		switch v := msg.Payload.(type) {
+		case *pb.WebsocketMessage_JoinGame:
+			err := s.addClient(v.JoinGame.PlayerId, cl)
+			// TODO: Send error message back to client
 			if err != nil {
-				break
+				fmt.Println("Error adding client:", err)
+				close(done)
+				return
 			}
-			var msg pb.WebsocketMessage
-			if err := proto.Unmarshal(data, &msg); err != nil {
-				fmt.Println("Failed to unmarshal message:", err)
-			} else {
-				s.msgChan <- &msg
+			fmt.Println("Player joined:", v.JoinGame.PlayerId)
+			s.msgChan <- msg
+		default:
+			fmt.Println("Expected JoinGame message, got:", v)
+			return
+		}
+
+		for {
+			msg, err := s.readMsg(c)
+			if err != nil {
+				close(done)
+				return
 			}
+			s.msgChan <- msg
 		}
 	}()
 
-	ctx := c.CloseRead(context.Background())
 	for {
 		select {
 		case msg := <-cl.sendChannel:
@@ -66,9 +86,9 @@ func (s *WsServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				return
 			}
-		case <-ctx.Done():
+		case <-done:
 			s.clientsMu.Lock()
-			delete(s.clients, cl)
+			s.clients[cl.PlayerId()] = nil
 			s.clientsMu.Unlock()
 		}
 	}
@@ -78,7 +98,33 @@ func (s *WsServer) Broadcast(message *pb.WebsocketMessage) {
 	s.clientsMu.Lock()
 	defer s.clientsMu.Unlock()
 
-	for cl := range s.clients {
+	for _, cl := range s.clients {
 		cl.GetSendChannel() <- message
 	}
+}
+
+func (s *WsServer) readMsg(c *websocket.Conn) (*pb.WebsocketMessage, error) {
+	_, data, err := c.ReadMessage()
+	if err != nil {
+		return nil, err
+	}
+	var msg pb.WebsocketMessage
+	if err := proto.Unmarshal(data, &msg); err != nil {
+		return nil, err
+	}
+	return &msg, nil
+}
+
+func (s *WsServer) addClient(playerId string, cl *Client) error {
+	s.clientsMu.Lock()
+	defer s.clientsMu.Unlock()
+
+	if client, exists := s.clients[playerId]; !exists {
+		return fmt.Errorf("player ID %s not recognized", playerId)
+	} else if client != nil {
+		return fmt.Errorf("player ID %s already has a connected client", playerId)
+	} else {
+		s.clients[playerId] = cl
+	}
+	return nil
 }
