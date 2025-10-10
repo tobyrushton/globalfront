@@ -30,7 +30,6 @@ export const GameWrapper: FC<PropsWithChildren> = ({ children }) => {
     }
 
    const handleWheel = (e: WheelEvent<HTMLDivElement>) => {
-        e.preventDefault()
         const zoomSpeed = 0.005
         const newScale = Math.min(Math.max(0.1, scale + e.deltaY * -zoomSpeed), 5)
         setScale(newScale)
