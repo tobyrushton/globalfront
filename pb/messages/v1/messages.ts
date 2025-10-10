@@ -41,6 +41,12 @@ export interface WebsocketMessage {
          */
         joinGame: JoinGame;
     } | {
+        oneofKind: "joinGameResponse";
+        /**
+         * @generated from protobuf field: messages.v1.JoinGameResponse join_game_response = 5
+         */
+        joinGameResponse: JoinGameResponse;
+    } | {
         oneofKind: undefined;
     };
 }
@@ -95,7 +101,11 @@ export enum MessageType {
     /**
      * @generated from protobuf enum value: MESSAGE_JOIN_GAME = 3;
      */
-    MESSAGE_JOIN_GAME = 3
+    MESSAGE_JOIN_GAME = 3,
+    /**
+     * @generated from protobuf enum value: MESSAGE_JOIN_GAME_RESPONSE = 4;
+     */
+    MESSAGE_JOIN_GAME_RESPONSE = 4
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class WebsocketMessage$Type extends MessageType$<WebsocketMessage> {
@@ -104,7 +114,8 @@ class WebsocketMessage$Type extends MessageType$<WebsocketMessage> {
             { no: 1, name: "type", kind: "enum", T: () => ["messages.v1.MessageType", MessageType] },
             { no: 2, name: "start_countdown", kind: "message", oneof: "payload", T: () => StartCountdown },
             { no: 3, name: "game_start", kind: "message", oneof: "payload", T: () => GameStart },
-            { no: 4, name: "join_game", kind: "message", oneof: "payload", T: () => JoinGame }
+            { no: 4, name: "join_game", kind: "message", oneof: "payload", T: () => JoinGame },
+            { no: 5, name: "join_game_response", kind: "message", oneof: "payload", T: () => JoinGameResponse }
         ]);
     }
     create(value?: PartialMessage<WebsocketMessage>): WebsocketMessage {
@@ -141,6 +152,12 @@ class WebsocketMessage$Type extends MessageType$<WebsocketMessage> {
                         joinGame: JoinGame.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).joinGame)
                     };
                     break;
+                case /* messages.v1.JoinGameResponse join_game_response */ 5:
+                    message.payload = {
+                        oneofKind: "joinGameResponse",
+                        joinGameResponse: JoinGameResponse.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).joinGameResponse)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -165,6 +182,9 @@ class WebsocketMessage$Type extends MessageType$<WebsocketMessage> {
         /* messages.v1.JoinGame join_game = 4; */
         if (message.payload.oneofKind === "joinGame")
             JoinGame.internalBinaryWrite(message.payload.joinGame, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
+        /* messages.v1.JoinGameResponse join_game_response = 5; */
+        if (message.payload.oneofKind === "joinGameResponse")
+            JoinGameResponse.internalBinaryWrite(message.payload.joinGameResponse, writer.tag(5, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

@@ -13,6 +13,7 @@ message WebsocketMessage {
         StartCountdown start_countdown = 2;
         GameStart game_start = 3;
         JoinGame join_game = 4;
+        JoinGameResponse join_game_response = 5;
     }
 }
 
@@ -21,6 +22,7 @@ enum MessageType {
     MESSAGE_START_COUNTDOWN = 1;
     MESSAGE_GAME_START = 2;
     MESSAGE_JOIN_GAME = 3;
+    MESSAGE_JOIN_GAME_RESPONSE = 4;
 }
 
 message StartCountdown {
