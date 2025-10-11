@@ -185,6 +185,94 @@ func (x *Tile) GetPlayerId() string {
 	return ""
 }
 
+type BoardRow struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tiles         []*Tile                `protobuf:"bytes,1,rep,name=tiles,proto3" json:"tiles,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BoardRow) Reset() {
+	*x = BoardRow{}
+	mi := &file_game_v1_game_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BoardRow) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BoardRow) ProtoMessage() {}
+
+func (x *BoardRow) ProtoReflect() protoreflect.Message {
+	mi := &file_game_v1_game_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BoardRow.ProtoReflect.Descriptor instead.
+func (*BoardRow) Descriptor() ([]byte, []int) {
+	return file_game_v1_game_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *BoardRow) GetTiles() []*Tile {
+	if x != nil {
+		return x.Tiles
+	}
+	return nil
+}
+
+type Board struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Rows          []*BoardRow            `protobuf:"bytes,1,rep,name=rows,proto3" json:"rows,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Board) Reset() {
+	*x = Board{}
+	mi := &file_game_v1_game_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Board) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Board) ProtoMessage() {}
+
+func (x *Board) ProtoReflect() protoreflect.Message {
+	mi := &file_game_v1_game_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Board.ProtoReflect.Descriptor instead.
+func (*Board) Descriptor() ([]byte, []int) {
+	return file_game_v1_game_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *Board) GetRows() []*BoardRow {
+	if x != nil {
+		return x.Rows
+	}
+	return nil
+}
+
 var File_game_v1_game_proto protoreflect.FileDescriptor
 
 const file_game_v1_game_proto_rawDesc = "" +
@@ -201,7 +289,11 @@ const file_game_v1_game_proto_rawDesc = "" +
 	"\vtroop_count\x18\x03 \x01(\x05R\n" +
 	"troopCount\"#\n" +
 	"\x04Tile\x12\x1b\n" +
-	"\tplayer_id\x18\x01 \x01(\tR\bplayerIdB/Z-github.com/tobyrushton/globalfront/pb/game/v1b\x06proto3"
+	"\tplayer_id\x18\x01 \x01(\tR\bplayerId\"/\n" +
+	"\bBoardRow\x12#\n" +
+	"\x05tiles\x18\x01 \x03(\v2\r.game.v1.TileR\x05tiles\".\n" +
+	"\x05Board\x12%\n" +
+	"\x04rows\x18\x01 \x03(\v2\x11.game.v1.BoardRowR\x04rowsB/Z-github.com/tobyrushton/globalfront/pb/game/v1b\x06proto3"
 
 var (
 	file_game_v1_game_proto_rawDescOnce sync.Once
@@ -215,18 +307,22 @@ func file_game_v1_game_proto_rawDescGZIP() []byte {
 	return file_game_v1_game_proto_rawDescData
 }
 
-var file_game_v1_game_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_game_v1_game_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_game_v1_game_proto_goTypes = []any{
-	(*Game)(nil),   // 0: game.v1.Game
-	(*Player)(nil), // 1: game.v1.Player
-	(*Tile)(nil),   // 2: game.v1.Tile
+	(*Game)(nil),     // 0: game.v1.Game
+	(*Player)(nil),   // 1: game.v1.Player
+	(*Tile)(nil),     // 2: game.v1.Tile
+	(*BoardRow)(nil), // 3: game.v1.BoardRow
+	(*Board)(nil),    // 4: game.v1.Board
 }
 var file_game_v1_game_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	2, // 0: game.v1.BoardRow.tiles:type_name -> game.v1.Tile
+	3, // 1: game.v1.Board.rows:type_name -> game.v1.BoardRow
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_game_v1_game_proto_init() }
@@ -240,7 +336,7 @@ func file_game_v1_game_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_game_v1_game_proto_rawDesc), len(file_game_v1_game_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -25,6 +25,8 @@ type Game struct {
 
 	playersMu sync.Mutex
 	players   map[string]*pb.Player
+
+	board *Board
 }
 
 func New(port int, game *pb.Game, players []string) *Game {
@@ -47,6 +49,7 @@ func New(port int, game *pb.Game, players []string) *Game {
 		started:  false,
 		players:  playerMap,
 		msgChan:  msgChan,
+		board:    NewBoard(),
 	}
 }
 
@@ -123,6 +126,7 @@ func (g *Game) joinPlayer(playerId string) error {
 		Payload: &v1.WebsocketMessage_JoinGameResponse{
 			JoinGameResponse: &v1.JoinGameResponse{
 				Players: utils.FlattenMap(g.players),
+				Board:   g.board.Board(),
 			},
 		},
 	}
