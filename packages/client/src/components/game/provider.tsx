@@ -1,10 +1,11 @@
 "use client"
 
 import { FC, PropsWithChildren, createContext, useContext, useEffect } from "react"
-import { WebsocketMessage, MessageType, JoinGame } from "@globalfront/pb/messages/v1/messages"
-import { Player } from "@globalfront/pb/game/v1/game"
+import { WebsocketMessage, MessageType, JoinGame, JoinGameResponse } from "@globalfront/pb/messages/v1/messages"
+import { Player, Board } from "@globalfront/pb/game/v1/game"
 import { useStatus } from "./status-provider"
 import { usePlayers } from "./player-provider"
+import { useTiles } from "./tile-provider"
 
 type GameProviderProps = {
     url: string
@@ -18,13 +19,15 @@ const GameContext = createContext<TGameContext | null>(null)
 export const GameProvider: FC<PropsWithChildren<GameProviderProps>> = ({ children, url, playerId }) => {
     const { setCountdown } = useStatus()
     const { setPlayers } = usePlayers()
+    const { setBoard } = useTiles()
 
-    const handleJoinGameResponse = (players: Player[]) => {
+    const handleJoinGameResponse = (res: JoinGameResponse) => {
         const playerMap = new Map<string, Player>()
-        players.forEach(player => {
+        res.players.forEach(player => {
             playerMap.set(player.id, player)
         })
         setPlayers(playerMap)
+        setBoard(res.board as Board)
     }
 
     const handleMessage = (msg: WebsocketMessage) => {
@@ -33,7 +36,8 @@ export const GameProvider: FC<PropsWithChildren<GameProviderProps>> = ({ childre
                 setCountdown(msg.payload.startCountdown.countdownSeconds)
                 break
             case "joinGameResponse":
-                handleJoinGameResponse(msg.payload.joinGameResponse.players)
+                handleJoinGameResponse(msg.payload.joinGameResponse)
+                break
             default:
                 console.log("Unhandled message:", msg)
         }
