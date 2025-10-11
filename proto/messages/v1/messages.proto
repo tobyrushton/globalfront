@@ -14,6 +14,7 @@ message WebsocketMessage {
         GameStart game_start = 3;
         JoinGame join_game = 4;
         JoinGameResponse join_game_response = 5;
+        Spawn spawn = 6;
     }
 }
 
@@ -23,6 +24,7 @@ enum MessageType {
     MESSAGE_GAME_START = 2;
     MESSAGE_JOIN_GAME = 3;
     MESSAGE_JOIN_GAME_RESPONSE = 4;
+    MESSAGE_SPAWN = 5;
 }
 
 message StartCountdown {
@@ -38,4 +40,9 @@ message JoinGame {
 message JoinGameResponse {
     repeated game.v1.Player players = 1;
     game.v1.Board board = 2;
+}
+
+message Spawn {
+    string player_id = 1;
+    int32 tile_id = 2;
 }

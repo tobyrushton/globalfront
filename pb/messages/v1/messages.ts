@@ -48,6 +48,12 @@ export interface WebsocketMessage {
          */
         joinGameResponse: JoinGameResponse;
     } | {
+        oneofKind: "spawn";
+        /**
+         * @generated from protobuf field: messages.v1.Spawn spawn = 6
+         */
+        spawn: Spawn;
+    } | {
         oneofKind: undefined;
     };
 }
@@ -88,6 +94,19 @@ export interface JoinGameResponse {
     board?: Board;
 }
 /**
+ * @generated from protobuf message messages.v1.Spawn
+ */
+export interface Spawn {
+    /**
+     * @generated from protobuf field: string player_id = 1
+     */
+    playerId: string;
+    /**
+     * @generated from protobuf field: int32 tile_id = 2
+     */
+    tileId: number;
+}
+/**
  * @generated from protobuf enum messages.v1.MessageType
  */
 export enum MessageType {
@@ -110,7 +129,11 @@ export enum MessageType {
     /**
      * @generated from protobuf enum value: MESSAGE_JOIN_GAME_RESPONSE = 4;
      */
-    MESSAGE_JOIN_GAME_RESPONSE = 4
+    MESSAGE_JOIN_GAME_RESPONSE = 4,
+    /**
+     * @generated from protobuf enum value: MESSAGE_SPAWN = 5;
+     */
+    MESSAGE_SPAWN = 5
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class WebsocketMessage$Type extends MessageType$<WebsocketMessage> {
@@ -120,7 +143,8 @@ class WebsocketMessage$Type extends MessageType$<WebsocketMessage> {
             { no: 2, name: "start_countdown", kind: "message", oneof: "payload", T: () => StartCountdown },
             { no: 3, name: "game_start", kind: "message", oneof: "payload", T: () => GameStart },
             { no: 4, name: "join_game", kind: "message", oneof: "payload", T: () => JoinGame },
-            { no: 5, name: "join_game_response", kind: "message", oneof: "payload", T: () => JoinGameResponse }
+            { no: 5, name: "join_game_response", kind: "message", oneof: "payload", T: () => JoinGameResponse },
+            { no: 6, name: "spawn", kind: "message", oneof: "payload", T: () => Spawn }
         ]);
     }
     create(value?: PartialMessage<WebsocketMessage>): WebsocketMessage {
@@ -163,6 +187,12 @@ class WebsocketMessage$Type extends MessageType$<WebsocketMessage> {
                         joinGameResponse: JoinGameResponse.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).joinGameResponse)
                     };
                     break;
+                case /* messages.v1.Spawn spawn */ 6:
+                    message.payload = {
+                        oneofKind: "spawn",
+                        spawn: Spawn.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).spawn)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -190,6 +220,9 @@ class WebsocketMessage$Type extends MessageType$<WebsocketMessage> {
         /* messages.v1.JoinGameResponse join_game_response = 5; */
         if (message.payload.oneofKind === "joinGameResponse")
             JoinGameResponse.internalBinaryWrite(message.payload.joinGameResponse, writer.tag(5, WireType.LengthDelimited).fork(), options).join();
+        /* messages.v1.Spawn spawn = 6; */
+        if (message.payload.oneofKind === "spawn")
+            Spawn.internalBinaryWrite(message.payload.spawn, writer.tag(6, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -386,3 +419,58 @@ class JoinGameResponse$Type extends MessageType$<JoinGameResponse> {
  * @generated MessageType for protobuf message messages.v1.JoinGameResponse
  */
 export const JoinGameResponse = new JoinGameResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Spawn$Type extends MessageType$<Spawn> {
+    constructor() {
+        super("messages.v1.Spawn", [
+            { no: 1, name: "player_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "tile_id", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Spawn>): Spawn {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.playerId = "";
+        message.tileId = 0;
+        if (value !== undefined)
+            reflectionMergePartial<Spawn>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Spawn): Spawn {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string player_id */ 1:
+                    message.playerId = reader.string();
+                    break;
+                case /* int32 tile_id */ 2:
+                    message.tileId = reader.int32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Spawn, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string player_id = 1; */
+        if (message.playerId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.playerId);
+        /* int32 tile_id = 2; */
+        if (message.tileId !== 0)
+            writer.tag(2, WireType.Varint).int32(message.tileId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message messages.v1.Spawn
+ */
+export const Spawn = new Spawn$Type();
