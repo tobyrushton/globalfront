@@ -10,6 +10,7 @@ import { UnknownFieldHandler } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType as MessageType$ } from "@protobuf-ts/runtime";
+import { Board } from "../../game/v1/game";
 import { Player } from "../../game/v1/game";
 /**
  * @generated from protobuf message messages.v1.WebsocketMessage
@@ -81,6 +82,10 @@ export interface JoinGameResponse {
      * @generated from protobuf field: repeated game.v1.Player players = 1
      */
     players: Player[];
+    /**
+     * @generated from protobuf field: game.v1.Board board = 2
+     */
+    board?: Board;
 }
 /**
  * @generated from protobuf enum messages.v1.MessageType
@@ -331,7 +336,8 @@ export const JoinGame = new JoinGame$Type();
 class JoinGameResponse$Type extends MessageType$<JoinGameResponse> {
     constructor() {
         super("messages.v1.JoinGameResponse", [
-            { no: 1, name: "players", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => Player }
+            { no: 1, name: "players", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => Player },
+            { no: 2, name: "board", kind: "message", T: () => Board }
         ]);
     }
     create(value?: PartialMessage<JoinGameResponse>): JoinGameResponse {
@@ -349,6 +355,9 @@ class JoinGameResponse$Type extends MessageType$<JoinGameResponse> {
                 case /* repeated game.v1.Player players */ 1:
                     message.players.push(Player.internalBinaryRead(reader, reader.uint32(), options));
                     break;
+                case /* game.v1.Board board */ 2:
+                    message.board = Board.internalBinaryRead(reader, reader.uint32(), options, message.board);
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -364,6 +373,9 @@ class JoinGameResponse$Type extends MessageType$<JoinGameResponse> {
         /* repeated game.v1.Player players = 1; */
         for (let i = 0; i < message.players.length; i++)
             Player.internalBinaryWrite(message.players[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* game.v1.Board board = 2; */
+        if (message.board)
+            Board.internalBinaryWrite(message.board, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

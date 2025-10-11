@@ -326,6 +326,7 @@ func (x *JoinGame) GetPlayerId() string {
 type JoinGameResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Players       []*v1.Player           `protobuf:"bytes,1,rep,name=players,proto3" json:"players,omitempty"`
+	Board         *v1.Board              `protobuf:"bytes,2,opt,name=board,proto3" json:"board,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -367,6 +368,13 @@ func (x *JoinGameResponse) GetPlayers() []*v1.Player {
 	return nil
 }
 
+func (x *JoinGameResponse) GetBoard() *v1.Board {
+	if x != nil {
+		return x.Board
+	}
+	return nil
+}
+
 var File_messages_v1_messages_proto protoreflect.FileDescriptor
 
 const file_messages_v1_messages_proto_rawDesc = "" +
@@ -384,9 +392,10 @@ const file_messages_v1_messages_proto_rawDesc = "" +
 	"\x11countdown_seconds\x18\x01 \x01(\x05R\x10countdownSeconds\"\v\n" +
 	"\tGameStart\"'\n" +
 	"\bJoinGame\x12\x1b\n" +
-	"\tplayer_id\x18\x01 \x01(\tR\bplayerId\"=\n" +
+	"\tplayer_id\x18\x01 \x01(\tR\bplayerId\"c\n" +
 	"\x10JoinGameResponse\x12)\n" +
-	"\aplayers\x18\x01 \x03(\v2\x0f.game.v1.PlayerR\aplayers*\x97\x01\n" +
+	"\aplayers\x18\x01 \x03(\v2\x0f.game.v1.PlayerR\aplayers\x12$\n" +
+	"\x05board\x18\x02 \x01(\v2\x0e.game.v1.BoardR\x05board*\x97\x01\n" +
 	"\vMessageType\x12\x1c\n" +
 	"\x18MESSAGE_TYPE_UNSPECIFIED\x10\x00\x12\x1b\n" +
 	"\x17MESSAGE_START_COUNTDOWN\x10\x01\x12\x16\n" +
@@ -416,6 +425,7 @@ var file_messages_v1_messages_proto_goTypes = []any{
 	(*JoinGame)(nil),         // 4: messages.v1.JoinGame
 	(*JoinGameResponse)(nil), // 5: messages.v1.JoinGameResponse
 	(*v1.Player)(nil),        // 6: game.v1.Player
+	(*v1.Board)(nil),         // 7: game.v1.Board
 }
 var file_messages_v1_messages_proto_depIdxs = []int32{
 	0, // 0: messages.v1.WebsocketMessage.type:type_name -> messages.v1.MessageType
@@ -424,11 +434,12 @@ var file_messages_v1_messages_proto_depIdxs = []int32{
 	4, // 3: messages.v1.WebsocketMessage.join_game:type_name -> messages.v1.JoinGame
 	5, // 4: messages.v1.WebsocketMessage.join_game_response:type_name -> messages.v1.JoinGameResponse
 	6, // 5: messages.v1.JoinGameResponse.players:type_name -> game.v1.Player
-	6, // [6:6] is the sub-list for method output_type
-	6, // [6:6] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	7, // 6: messages.v1.JoinGameResponse.board:type_name -> game.v1.Board
+	7, // [7:7] is the sub-list for method output_type
+	7, // [7:7] is the sub-list for method input_type
+	7, // [7:7] is the sub-list for extension type_name
+	7, // [7:7] is the sub-list for extension extendee
+	0, // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_messages_v1_messages_proto_init() }

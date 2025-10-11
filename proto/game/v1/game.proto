@@ -19,3 +19,11 @@ message Player {
 message Tile {
     string player_id = 1;
 }
+
+message BoardRow {
+    repeated Tile tiles = 1;
+}
+
+message Board {
+    repeated BoardRow rows = 1;
+}

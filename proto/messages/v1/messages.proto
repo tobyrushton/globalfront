@@ -37,4 +37,5 @@ message JoinGame {
 
 message JoinGameResponse {
     repeated game.v1.Player players = 1;
+    game.v1.Board board = 2;
 }
