@@ -83,3 +83,22 @@ func (b *Board) SetPlayerSpawn(playerId string, tileId int32) {
 		}
 	}
 }
+
+func (b *Board) GetChangedTiles() map[int32]string {
+	b.tilesMu.Lock()
+	defer b.tilesMu.Unlock()
+
+	changedTiles := make(map[int32]string)
+
+	for i, row := range b.tiles {
+		for j, tile := range row {
+			if tile.Changed() {
+				tileId := int32(i*200 + j)
+				changedTiles[tileId] = tile.PlayerId()
+				tile.ClearChanged()
+			}
+		}
+	}
+
+	return changedTiles
+}

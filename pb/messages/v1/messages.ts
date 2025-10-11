@@ -54,6 +54,12 @@ export interface WebsocketMessage {
          */
         spawn: Spawn;
     } | {
+        oneofKind: "update";
+        /**
+         * @generated from protobuf field: messages.v1.Update update = 7
+         */
+        update: Update;
+    } | {
         oneofKind: undefined;
     };
 }
@@ -107,6 +113,17 @@ export interface Spawn {
     tileId: number;
 }
 /**
+ * @generated from protobuf message messages.v1.Update
+ */
+export interface Update {
+    /**
+     * @generated from protobuf field: map<int32, string> updated_tiles = 1
+     */
+    updatedTiles: {
+        [key: number]: string;
+    };
+}
+/**
  * @generated from protobuf enum messages.v1.MessageType
  */
 export enum MessageType {
@@ -133,7 +150,11 @@ export enum MessageType {
     /**
      * @generated from protobuf enum value: MESSAGE_SPAWN = 5;
      */
-    MESSAGE_SPAWN = 5
+    MESSAGE_SPAWN = 5,
+    /**
+     * @generated from protobuf enum value: MESSAGE_UPDATE = 6;
+     */
+    MESSAGE_UPDATE = 6
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class WebsocketMessage$Type extends MessageType$<WebsocketMessage> {
@@ -144,7 +165,8 @@ class WebsocketMessage$Type extends MessageType$<WebsocketMessage> {
             { no: 3, name: "game_start", kind: "message", oneof: "payload", T: () => GameStart },
             { no: 4, name: "join_game", kind: "message", oneof: "payload", T: () => JoinGame },
             { no: 5, name: "join_game_response", kind: "message", oneof: "payload", T: () => JoinGameResponse },
-            { no: 6, name: "spawn", kind: "message", oneof: "payload", T: () => Spawn }
+            { no: 6, name: "spawn", kind: "message", oneof: "payload", T: () => Spawn },
+            { no: 7, name: "update", kind: "message", oneof: "payload", T: () => Update }
         ]);
     }
     create(value?: PartialMessage<WebsocketMessage>): WebsocketMessage {
@@ -193,6 +215,12 @@ class WebsocketMessage$Type extends MessageType$<WebsocketMessage> {
                         spawn: Spawn.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).spawn)
                     };
                     break;
+                case /* messages.v1.Update update */ 7:
+                    message.payload = {
+                        oneofKind: "update",
+                        update: Update.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).update)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -223,6 +251,9 @@ class WebsocketMessage$Type extends MessageType$<WebsocketMessage> {
         /* messages.v1.Spawn spawn = 6; */
         if (message.payload.oneofKind === "spawn")
             Spawn.internalBinaryWrite(message.payload.spawn, writer.tag(6, WireType.LengthDelimited).fork(), options).join();
+        /* messages.v1.Update update = 7; */
+        if (message.payload.oneofKind === "update")
+            Update.internalBinaryWrite(message.payload.update, writer.tag(7, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -474,3 +505,66 @@ class Spawn$Type extends MessageType$<Spawn> {
  * @generated MessageType for protobuf message messages.v1.Spawn
  */
 export const Spawn = new Spawn$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Update$Type extends MessageType$<Update> {
+    constructor() {
+        super("messages.v1.Update", [
+            { no: 1, name: "updated_tiles", kind: "map", K: 5 /*ScalarType.INT32*/, V: { kind: "scalar", T: 9 /*ScalarType.STRING*/ } }
+        ]);
+    }
+    create(value?: PartialMessage<Update>): Update {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.updatedTiles = {};
+        if (value !== undefined)
+            reflectionMergePartial<Update>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Update): Update {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* map<int32, string> updated_tiles */ 1:
+                    this.binaryReadMap1(message.updatedTiles, reader, options);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    private binaryReadMap1(map: Update["updatedTiles"], reader: IBinaryReader, options: BinaryReadOptions): void {
+        let len = reader.uint32(), end = reader.pos + len, key: keyof Update["updatedTiles"] | undefined, val: Update["updatedTiles"][any] | undefined;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case 1:
+                    key = reader.int32();
+                    break;
+                case 2:
+                    val = reader.string();
+                    break;
+                default: throw new globalThis.Error("unknown map entry field for messages.v1.Update.updated_tiles");
+            }
+        }
+        map[key ?? 0] = val ?? "";
+    }
+    internalBinaryWrite(message: Update, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* map<int32, string> updated_tiles = 1; */
+        for (let k of globalThis.Object.keys(message.updatedTiles))
+            writer.tag(1, WireType.LengthDelimited).fork().tag(1, WireType.Varint).int32(parseInt(k)).tag(2, WireType.LengthDelimited).string(message.updatedTiles[k as any]).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message messages.v1.Update
+ */
+export const Update = new Update$Type();

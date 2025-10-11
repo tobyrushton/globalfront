@@ -31,6 +31,7 @@ const (
 	MessageType_MESSAGE_JOIN_GAME          MessageType = 3
 	MessageType_MESSAGE_JOIN_GAME_RESPONSE MessageType = 4
 	MessageType_MESSAGE_SPAWN              MessageType = 5
+	MessageType_MESSAGE_UPDATE             MessageType = 6
 )
 
 // Enum value maps for MessageType.
@@ -42,6 +43,7 @@ var (
 		3: "MESSAGE_JOIN_GAME",
 		4: "MESSAGE_JOIN_GAME_RESPONSE",
 		5: "MESSAGE_SPAWN",
+		6: "MESSAGE_UPDATE",
 	}
 	MessageType_value = map[string]int32{
 		"MESSAGE_TYPE_UNSPECIFIED":   0,
@@ -50,6 +52,7 @@ var (
 		"MESSAGE_JOIN_GAME":          3,
 		"MESSAGE_JOIN_GAME_RESPONSE": 4,
 		"MESSAGE_SPAWN":              5,
+		"MESSAGE_UPDATE":             6,
 	}
 )
 
@@ -90,6 +93,7 @@ type WebsocketMessage struct {
 	//	*WebsocketMessage_JoinGame
 	//	*WebsocketMessage_JoinGameResponse
 	//	*WebsocketMessage_Spawn
+	//	*WebsocketMessage_Update
 	Payload       isWebsocketMessage_Payload `protobuf_oneof:"payload"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -184,6 +188,15 @@ func (x *WebsocketMessage) GetSpawn() *Spawn {
 	return nil
 }
 
+func (x *WebsocketMessage) GetUpdate() *Update {
+	if x != nil {
+		if x, ok := x.Payload.(*WebsocketMessage_Update); ok {
+			return x.Update
+		}
+	}
+	return nil
+}
+
 type isWebsocketMessage_Payload interface {
 	isWebsocketMessage_Payload()
 }
@@ -208,6 +221,10 @@ type WebsocketMessage_Spawn struct {
 	Spawn *Spawn `protobuf:"bytes,6,opt,name=spawn,proto3,oneof"`
 }
 
+type WebsocketMessage_Update struct {
+	Update *Update `protobuf:"bytes,7,opt,name=update,proto3,oneof"`
+}
+
 func (*WebsocketMessage_StartCountdown) isWebsocketMessage_Payload() {}
 
 func (*WebsocketMessage_GameStart) isWebsocketMessage_Payload() {}
@@ -217,6 +234,8 @@ func (*WebsocketMessage_JoinGame) isWebsocketMessage_Payload() {}
 func (*WebsocketMessage_JoinGameResponse) isWebsocketMessage_Payload() {}
 
 func (*WebsocketMessage_Spawn) isWebsocketMessage_Payload() {}
+
+func (*WebsocketMessage_Update) isWebsocketMessage_Payload() {}
 
 type StartCountdown struct {
 	state            protoimpl.MessageState `protogen:"open.v1"`
@@ -446,11 +465,55 @@ func (x *Spawn) GetTileId() int32 {
 	return 0
 }
 
+type Update struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UpdatedTiles  map[int32]string       `protobuf:"bytes,1,rep,name=updated_tiles,json=updatedTiles,proto3" json:"updated_tiles,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Update) Reset() {
+	*x = Update{}
+	mi := &file_messages_v1_messages_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Update) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Update) ProtoMessage() {}
+
+func (x *Update) ProtoReflect() protoreflect.Message {
+	mi := &file_messages_v1_messages_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Update.ProtoReflect.Descriptor instead.
+func (*Update) Descriptor() ([]byte, []int) {
+	return file_messages_v1_messages_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *Update) GetUpdatedTiles() map[int32]string {
+	if x != nil {
+		return x.UpdatedTiles
+	}
+	return nil
+}
+
 var File_messages_v1_messages_proto protoreflect.FileDescriptor
 
 const file_messages_v1_messages_proto_rawDesc = "" +
 	"\n" +
-	"\x1amessages/v1/messages.proto\x12\vmessages.v1\x1a\x12game/v1/game.proto\"\xfd\x02\n" +
+	"\x1amessages/v1/messages.proto\x12\vmessages.v1\x1a\x12game/v1/game.proto\"\xac\x03\n" +
 	"\x10WebsocketMessage\x12,\n" +
 	"\x04type\x18\x01 \x01(\x0e2\x18.messages.v1.MessageTypeR\x04type\x12F\n" +
 	"\x0fstart_countdown\x18\x02 \x01(\v2\x1b.messages.v1.StartCountdownH\x00R\x0estartCountdown\x127\n" +
@@ -458,7 +521,8 @@ const file_messages_v1_messages_proto_rawDesc = "" +
 	"game_start\x18\x03 \x01(\v2\x16.messages.v1.GameStartH\x00R\tgameStart\x124\n" +
 	"\tjoin_game\x18\x04 \x01(\v2\x15.messages.v1.JoinGameH\x00R\bjoinGame\x12M\n" +
 	"\x12join_game_response\x18\x05 \x01(\v2\x1d.messages.v1.JoinGameResponseH\x00R\x10joinGameResponse\x12*\n" +
-	"\x05spawn\x18\x06 \x01(\v2\x12.messages.v1.SpawnH\x00R\x05spawnB\t\n" +
+	"\x05spawn\x18\x06 \x01(\v2\x12.messages.v1.SpawnH\x00R\x05spawn\x12-\n" +
+	"\x06update\x18\a \x01(\v2\x13.messages.v1.UpdateH\x00R\x06updateB\t\n" +
 	"\apayload\"=\n" +
 	"\x0eStartCountdown\x12+\n" +
 	"\x11countdown_seconds\x18\x01 \x01(\x05R\x10countdownSeconds\"\v\n" +
@@ -470,14 +534,20 @@ const file_messages_v1_messages_proto_rawDesc = "" +
 	"\x05board\x18\x02 \x01(\v2\x0e.game.v1.BoardR\x05board\"=\n" +
 	"\x05Spawn\x12\x1b\n" +
 	"\tplayer_id\x18\x01 \x01(\tR\bplayerId\x12\x17\n" +
-	"\atile_id\x18\x02 \x01(\x05R\x06tileId*\xaa\x01\n" +
+	"\atile_id\x18\x02 \x01(\x05R\x06tileId\"\x95\x01\n" +
+	"\x06Update\x12J\n" +
+	"\rupdated_tiles\x18\x01 \x03(\v2%.messages.v1.Update.UpdatedTilesEntryR\fupdatedTiles\x1a?\n" +
+	"\x11UpdatedTilesEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\x05R\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01*\xbe\x01\n" +
 	"\vMessageType\x12\x1c\n" +
 	"\x18MESSAGE_TYPE_UNSPECIFIED\x10\x00\x12\x1b\n" +
 	"\x17MESSAGE_START_COUNTDOWN\x10\x01\x12\x16\n" +
 	"\x12MESSAGE_GAME_START\x10\x02\x12\x15\n" +
 	"\x11MESSAGE_JOIN_GAME\x10\x03\x12\x1e\n" +
 	"\x1aMESSAGE_JOIN_GAME_RESPONSE\x10\x04\x12\x11\n" +
-	"\rMESSAGE_SPAWN\x10\x05B3Z1github.com/tobyrushton/globalfront/pb/messages/v1b\x06proto3"
+	"\rMESSAGE_SPAWN\x10\x05\x12\x12\n" +
+	"\x0eMESSAGE_UPDATE\x10\x06B3Z1github.com/tobyrushton/globalfront/pb/messages/v1b\x06proto3"
 
 var (
 	file_messages_v1_messages_proto_rawDescOnce sync.Once
@@ -492,7 +562,7 @@ func file_messages_v1_messages_proto_rawDescGZIP() []byte {
 }
 
 var file_messages_v1_messages_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_messages_v1_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_messages_v1_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_messages_v1_messages_proto_goTypes = []any{
 	(MessageType)(0),         // 0: messages.v1.MessageType
 	(*WebsocketMessage)(nil), // 1: messages.v1.WebsocketMessage
@@ -501,23 +571,27 @@ var file_messages_v1_messages_proto_goTypes = []any{
 	(*JoinGame)(nil),         // 4: messages.v1.JoinGame
 	(*JoinGameResponse)(nil), // 5: messages.v1.JoinGameResponse
 	(*Spawn)(nil),            // 6: messages.v1.Spawn
-	(*v1.Player)(nil),        // 7: game.v1.Player
-	(*v1.Board)(nil),         // 8: game.v1.Board
+	(*Update)(nil),           // 7: messages.v1.Update
+	nil,                      // 8: messages.v1.Update.UpdatedTilesEntry
+	(*v1.Player)(nil),        // 9: game.v1.Player
+	(*v1.Board)(nil),         // 10: game.v1.Board
 }
 var file_messages_v1_messages_proto_depIdxs = []int32{
-	0, // 0: messages.v1.WebsocketMessage.type:type_name -> messages.v1.MessageType
-	2, // 1: messages.v1.WebsocketMessage.start_countdown:type_name -> messages.v1.StartCountdown
-	3, // 2: messages.v1.WebsocketMessage.game_start:type_name -> messages.v1.GameStart
-	4, // 3: messages.v1.WebsocketMessage.join_game:type_name -> messages.v1.JoinGame
-	5, // 4: messages.v1.WebsocketMessage.join_game_response:type_name -> messages.v1.JoinGameResponse
-	6, // 5: messages.v1.WebsocketMessage.spawn:type_name -> messages.v1.Spawn
-	7, // 6: messages.v1.JoinGameResponse.players:type_name -> game.v1.Player
-	8, // 7: messages.v1.JoinGameResponse.board:type_name -> game.v1.Board
-	8, // [8:8] is the sub-list for method output_type
-	8, // [8:8] is the sub-list for method input_type
-	8, // [8:8] is the sub-list for extension type_name
-	8, // [8:8] is the sub-list for extension extendee
-	0, // [0:8] is the sub-list for field type_name
+	0,  // 0: messages.v1.WebsocketMessage.type:type_name -> messages.v1.MessageType
+	2,  // 1: messages.v1.WebsocketMessage.start_countdown:type_name -> messages.v1.StartCountdown
+	3,  // 2: messages.v1.WebsocketMessage.game_start:type_name -> messages.v1.GameStart
+	4,  // 3: messages.v1.WebsocketMessage.join_game:type_name -> messages.v1.JoinGame
+	5,  // 4: messages.v1.WebsocketMessage.join_game_response:type_name -> messages.v1.JoinGameResponse
+	6,  // 5: messages.v1.WebsocketMessage.spawn:type_name -> messages.v1.Spawn
+	7,  // 6: messages.v1.WebsocketMessage.update:type_name -> messages.v1.Update
+	9,  // 7: messages.v1.JoinGameResponse.players:type_name -> game.v1.Player
+	10, // 8: messages.v1.JoinGameResponse.board:type_name -> game.v1.Board
+	8,  // 9: messages.v1.Update.updated_tiles:type_name -> messages.v1.Update.UpdatedTilesEntry
+	10, // [10:10] is the sub-list for method output_type
+	10, // [10:10] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_messages_v1_messages_proto_init() }
@@ -531,6 +605,7 @@ func file_messages_v1_messages_proto_init() {
 		(*WebsocketMessage_JoinGame)(nil),
 		(*WebsocketMessage_JoinGameResponse)(nil),
 		(*WebsocketMessage_Spawn)(nil),
+		(*WebsocketMessage_Update)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -538,7 +613,7 @@ func file_messages_v1_messages_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_messages_v1_messages_proto_rawDesc), len(file_messages_v1_messages_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   6,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

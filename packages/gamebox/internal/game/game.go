@@ -1,6 +1,7 @@
 package game
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"net/http"
@@ -14,6 +15,8 @@ import (
 )
 
 type Game struct {
+	ctx context.Context
+
 	port int
 	game *pb.Game
 
@@ -43,6 +46,7 @@ func New(port int, game *pb.Game, players []string) *Game {
 	msgChan := make(chan *v1.WebsocketMessage, 100)
 
 	return &Game{
+		ctx:      context.TODO(),
 		port:     port,
 		game:     game,
 		wsServer: ws.NewServer(msgChan, players),
@@ -70,6 +74,7 @@ func (g *Game) Start() error {
 	}()
 
 	go g.startGame()
+	go g.updateLoop()
 
 	return s.Serve(l)
 }
@@ -139,4 +144,27 @@ func (g *Game) joinPlayer(playerId string) error {
 
 func (g *Game) handleSpawn(playerId string, tileId int32) {
 	g.board.SetPlayerSpawn(playerId, tileId)
+}
+
+func (g *Game) updateLoop() {
+	ticker := time.NewTicker(time.Second / 10)
+
+	for {
+		select {
+		case <-g.ctx.Done():
+			return
+		case <-ticker.C:
+			boardUpdates := g.board.GetChangedTiles()
+			if len(boardUpdates) > 0 {
+				g.wsServer.Broadcast(&v1.WebsocketMessage{
+					Type: v1.MessageType_MESSAGE_UPDATE,
+					Payload: &v1.WebsocketMessage_Update{
+						Update: &v1.Update{
+							UpdatedTiles: boardUpdates,
+						},
+					},
+				})
+			}
+		}
+	}
 }
