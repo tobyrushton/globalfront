@@ -15,3 +15,7 @@ message Player {
     string color = 2;
     int32 troop_count = 3;
 }
+
+message Tile {
+    string player_id = 1;
+}

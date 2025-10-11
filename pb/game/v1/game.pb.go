@@ -141,6 +141,50 @@ func (x *Player) GetTroopCount() int32 {
 	return 0
 }
 
+type Tile struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PlayerId      string                 `protobuf:"bytes,1,opt,name=player_id,json=playerId,proto3" json:"player_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Tile) Reset() {
+	*x = Tile{}
+	mi := &file_game_v1_game_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Tile) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Tile) ProtoMessage() {}
+
+func (x *Tile) ProtoReflect() protoreflect.Message {
+	mi := &file_game_v1_game_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Tile.ProtoReflect.Descriptor instead.
+func (*Tile) Descriptor() ([]byte, []int) {
+	return file_game_v1_game_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *Tile) GetPlayerId() string {
+	if x != nil {
+		return x.PlayerId
+	}
+	return ""
+}
+
 var File_game_v1_game_proto protoreflect.FileDescriptor
 
 const file_game_v1_game_proto_rawDesc = "" +
@@ -155,7 +199,9 @@ const file_game_v1_game_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05color\x18\x02 \x01(\tR\x05color\x12\x1f\n" +
 	"\vtroop_count\x18\x03 \x01(\x05R\n" +
-	"troopCountB/Z-github.com/tobyrushton/globalfront/pb/game/v1b\x06proto3"
+	"troopCount\"#\n" +
+	"\x04Tile\x12\x1b\n" +
+	"\tplayer_id\x18\x01 \x01(\tR\bplayerIdB/Z-github.com/tobyrushton/globalfront/pb/game/v1b\x06proto3"
 
 var (
 	file_game_v1_game_proto_rawDescOnce sync.Once
@@ -169,10 +215,11 @@ func file_game_v1_game_proto_rawDescGZIP() []byte {
 	return file_game_v1_game_proto_rawDescData
 }
 
-var file_game_v1_game_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_game_v1_game_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_game_v1_game_proto_goTypes = []any{
 	(*Game)(nil),   // 0: game.v1.Game
 	(*Player)(nil), // 1: game.v1.Player
+	(*Tile)(nil),   // 2: game.v1.Tile
 }
 var file_game_v1_game_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -193,7 +240,7 @@ func file_game_v1_game_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_game_v1_game_proto_rawDesc), len(file_game_v1_game_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
