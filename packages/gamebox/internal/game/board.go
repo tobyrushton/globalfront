@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	spawnRadius = 5
+	spawnRadius = 4
 )
 
 type Board struct {

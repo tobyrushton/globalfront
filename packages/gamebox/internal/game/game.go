@@ -147,7 +147,7 @@ func (g *Game) handleSpawn(playerId string, tileId int32) {
 }
 
 func (g *Game) updateLoop() {
-	ticker := time.NewTicker(time.Second / 10)
+	ticker := time.NewTicker(time.Second / 20)
 
 	for {
 		select {
