@@ -1,6 +1,6 @@
 "use client"
 
-import { FC, PropsWithChildren, createContext, useContext, useEffect } from "react"
+import { FC, PropsWithChildren, createContext, useContext, useEffect, useRef } from "react"
 import { WebsocketMessage, MessageType, JoinGame, JoinGameResponse } from "@globalfront/pb/messages/v1/messages"
 import { Player, Board } from "@globalfront/pb/game/v1/game"
 import { useStatus } from "./status-provider"
@@ -12,14 +12,26 @@ type GameProviderProps = {
     playerId: string
 }
 
-type TGameContext = {}
+type TGameContext = {
+    send: (msg: WebsocketMessage) => void
+    playerId: string
+}
 
 const GameContext = createContext<TGameContext | null>(null)
 
 export const GameProvider: FC<PropsWithChildren<GameProviderProps>> = ({ children, url, playerId }) => {
+    const socketRef = useRef<WebSocket | null>(null) 
     const { setCountdown } = useStatus()
     const { setPlayers } = usePlayers()
     const { setBoard } = useTiles()
+
+    const send = (msg: WebsocketMessage) => {
+        if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+            socketRef.current.send(WebsocketMessage.toBinary(msg))
+        } else {
+            console.warn("WebSocket is not open. Unable to send message.")
+        }
+    }
 
     const handleJoinGameResponse = (res: JoinGameResponse) => {
         const playerMap = new Map<string, Player>()
@@ -46,6 +58,7 @@ export const GameProvider: FC<PropsWithChildren<GameProviderProps>> = ({ childre
     useEffect(() => {
         const socket = new WebSocket(url)
         socket.binaryType = "arraybuffer"
+        socketRef.current = socket
 
         socket.onopen = () => {
             const msg = WebsocketMessage.create({
@@ -55,12 +68,10 @@ export const GameProvider: FC<PropsWithChildren<GameProviderProps>> = ({ childre
                     joinGame: JoinGame.create({ playerId })
                 }
             })
-            console.log("Sending join game message:", msg)
             socket.send(WebsocketMessage.toBinary(msg))
         }
 
         socket.onmessage = (event) => {
-            console.log(event)
             if (event.data instanceof ArrayBuffer) {
                 const message = WebsocketMessage.fromBinary(new Uint8Array(event.data))
                 handleMessage(message)
@@ -71,7 +82,7 @@ export const GameProvider: FC<PropsWithChildren<GameProviderProps>> = ({ childre
     }, [url])
     
     return (
-        <GameContext.Provider value={null}>
+        <GameContext.Provider value={{ send, playerId }}>
             {children}
         </GameContext.Provider>
     )
