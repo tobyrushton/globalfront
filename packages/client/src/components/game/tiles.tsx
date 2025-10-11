@@ -6,6 +6,7 @@ import { usePlayers } from "./player-provider"
 import { useGame } from "./provider"
 import { useStatus } from "./status-provider"
 import { MessageType, Spawn, WebsocketMessage } from "@globalfront/pb/messages/v1/messages"
+import { convertCoordinatesToTileId } from "@/lib/tiles"
 
 export const GameTiles: FC = () => {
     const { tiles } = useTiles()
@@ -20,7 +21,7 @@ export const GameTiles: FC = () => {
                 payload: {
                     oneofKind: "spawn",
                     spawn: Spawn.create({
-                        playerId, tileId: (row+1)*(col+1)
+                        playerId, tileId: convertCoordinatesToTileId(row, col)
                     })
                 }
             }))

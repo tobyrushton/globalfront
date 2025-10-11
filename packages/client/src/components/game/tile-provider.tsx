@@ -6,6 +6,7 @@ import { Board } from "@globalfront/pb/game/v1/game"
 type TTileContext = {
     tiles: string[][]
     setBoard: (board: Board) => void
+    handleTileUpdate: (updates: { [key: number]: string }) => void
 }
 
 const TileContext = createContext<TTileContext | null>(null)
@@ -24,8 +25,25 @@ export const TileProvider: FC<PropsWithChildren> = ({ children }) => {
         })
         setTiles(newTiles)
     }
+
+    const handleTileUpdate = (updates: { [key: number]: string }) => {
+        setTiles(prevTiles => {
+            const newTiles = prevTiles.map(row => [...row])
+
+            for (const [tileIdStr, playerId] of Object.entries(updates)) {
+                const tileId = parseInt(tileIdStr, 10)
+                const row = Math.floor(tileId / 200)
+                const col = tileId % 200
+                if (row >= 0 && row < 200 && col >= 0 && col < 200) {
+                    newTiles[row][col] = playerId
+                }
+            }
+
+            return newTiles
+        })
+    }
     
-    const value = useMemo(() => ({ tiles, setBoard }), [tiles])
+    const value = useMemo(() => ({ tiles, setBoard, handleTileUpdate }), [tiles])
 
     return (
         <TileContext.Provider value={value}>

@@ -23,7 +23,7 @@ export const GameProvider: FC<PropsWithChildren<GameProviderProps>> = ({ childre
     const socketRef = useRef<WebSocket | null>(null) 
     const { setCountdown } = useStatus()
     const { setPlayers } = usePlayers()
-    const { setBoard } = useTiles()
+    const { setBoard, handleTileUpdate } = useTiles()
 
     const send = (msg: WebsocketMessage) => {
         if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
@@ -49,6 +49,9 @@ export const GameProvider: FC<PropsWithChildren<GameProviderProps>> = ({ childre
                 break
             case "joinGameResponse":
                 handleJoinGameResponse(msg.payload.joinGameResponse)
+                break
+            case "update":
+                handleTileUpdate(msg.payload.update.updatedTiles)
                 break
             default:
                 console.log("Unhandled message:", msg)
