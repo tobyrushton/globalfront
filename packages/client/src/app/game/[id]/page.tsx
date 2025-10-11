@@ -5,6 +5,7 @@ import { serverClient } from "@/grpc/client";
 import { GameProvider } from "@/components/game/provider";
 import { StatusProvider } from "@/components/game/status-provider";
 import { TileProvider } from "@/components/game/tile-provider";
+import { PlayerProvider } from "@/components/game/player-provider";
 
 type Props = {
     params: Promise<{
@@ -23,13 +24,15 @@ const GamePage: FC<Props> = async ({ params, searchParams }) => {
     console.log("game url:",  res.response.url)
     return (
         <TileProvider>
-            <StatusProvider>
-                <GameProvider url={res.response.url} playerId={sp?.playerId as string}>
-                    <GameWrapper>
-                        <GameBoard />
-                    </GameWrapper>
-                </GameProvider>
-            </StatusProvider>
+            <PlayerProvider>
+                <StatusProvider>
+                    <GameProvider url={res.response.url} playerId={sp?.playerId as string}>
+                        <GameWrapper>
+                            <GameBoard />
+                        </GameWrapper>
+                    </GameProvider>
+                </StatusProvider>
+            </PlayerProvider>
         </TileProvider>
     )    
 }

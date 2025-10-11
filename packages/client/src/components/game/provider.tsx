@@ -2,7 +2,9 @@
 
 import { FC, PropsWithChildren, createContext, useContext, useEffect } from "react"
 import { WebsocketMessage, MessageType, JoinGame } from "@globalfront/pb/messages/v1/messages"
+import { Player } from "@globalfront/pb/game/v1/game"
 import { useStatus } from "./status-provider"
+import { usePlayers } from "./player-provider"
 
 type GameProviderProps = {
     url: string
@@ -15,11 +17,25 @@ const GameContext = createContext<TGameContext | null>(null)
 
 export const GameProvider: FC<PropsWithChildren<GameProviderProps>> = ({ children, url, playerId }) => {
     const { setCountdown } = useStatus()
+    const { setPlayers } = usePlayers()
+
+    const handleJoinGameResponse = (players: Player[]) => {
+        const playerMap = new Map<string, Player>()
+        players.forEach(player => {
+            playerMap.set(player.id, player)
+        })
+        setPlayers(playerMap)
+    }
 
     const handleMessage = (msg: WebsocketMessage) => {
         switch(msg.payload.oneofKind) {
             case "startCountdown":
                 setCountdown(msg.payload.startCountdown.countdownSeconds)
+                break
+            case "joinGameResponse":
+                handleJoinGameResponse(msg.payload.joinGameResponse.players)
+            default:
+                console.log("Unhandled message:", msg)
         }
     }
 
