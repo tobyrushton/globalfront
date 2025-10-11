@@ -1,9 +1,22 @@
 package game
 
-import v1 "github.com/tobyrushton/globalfront/pb/game/v1"
+import (
+	"math"
+	"sync"
+
+	v1 "github.com/tobyrushton/globalfront/pb/game/v1"
+)
+
+const (
+	spawnRadius = 5
+)
 
 type Board struct {
-	tiles [][]*Tile
+	tilesMu sync.Mutex
+	tiles   [][]*Tile
+
+	height int
+	width  int
 }
 
 func NewBoard() *Board {
@@ -15,7 +28,9 @@ func NewBoard() *Board {
 		}
 	}
 	return &Board{
-		tiles: tiles,
+		tiles:  tiles,
+		height: 200,
+		width:  200,
 	}
 }
 
@@ -41,4 +56,30 @@ func (b *Board) Board() *v1.Board {
 	}
 
 	return board
+}
+
+func (b *Board) SetPlayerSpawn(playerId string, tileId int32) {
+	b.tilesMu.Lock()
+	defer b.tilesMu.Unlock()
+
+	centerX := int(tileId / 200)
+	centerY := int(tileId % 200)
+
+	for dy := -spawnRadius; dy <= spawnRadius; dy++ {
+		for dx := -spawnRadius; dx <= spawnRadius; dx++ {
+			x := centerX + dx
+			y := centerY + dy
+
+			// Skip out-of-bounds tiles
+			if x < 0 || y < 0 || x >= b.width || y >= b.height {
+				continue
+			}
+
+			// Check if the tile is within the circular radius
+			distance := math.Sqrt(float64(dx*dx + dy*dy))
+			if distance <= float64(spawnRadius) {
+				b.tiles[x][y].SetPlayerId(playerId)
+			}
+		}
+	}
 }

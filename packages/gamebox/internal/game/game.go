@@ -108,6 +108,8 @@ func (g *Game) handleMsg(msg *v1.WebsocketMessage) {
 		if err != nil {
 			fmt.Println("Error joining player:", err)
 		}
+	case *v1.WebsocketMessage_Spawn:
+		g.handleSpawn(p.Spawn.PlayerId, p.Spawn.TileId)
 	default:
 		fmt.Println("Unhandled message type:", msg.Type)
 	}
@@ -133,4 +135,8 @@ func (g *Game) joinPlayer(playerId string) error {
 	g.wsServer.SendToPlayer(playerId, msg)
 
 	return nil
+}
+
+func (g *Game) handleSpawn(playerId string, tileId int32) {
+	g.board.SetPlayerSpawn(playerId, tileId)
 }
