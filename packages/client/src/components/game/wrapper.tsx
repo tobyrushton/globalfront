@@ -30,7 +30,6 @@ export const GameWrapper: FC<PropsWithChildren> = ({ children }) => {
     }
 
    const handleWheel = (e: WheelEvent<HTMLDivElement>) => {
-        e.preventDefault()
         const zoomSpeed = 0.005
         const newScale = Math.min(Math.max(0.1, scale + e.deltaY * -zoomSpeed), 5)
         setScale(newScale)
@@ -38,7 +37,7 @@ export const GameWrapper: FC<PropsWithChildren> = ({ children }) => {
 
     return (
         <div 
-            className="absolute flex w-full h-full justify-center items-center cursor-grab active:cursor-grabbing"
+            className="absolute flex w-full h-full justify-center items-center"
             onMouseDown={onMouseDown}
             onMouseUp={onMouseUp}
             onMouseMove={handleMouseMove} 

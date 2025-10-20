@@ -9,3 +9,21 @@ message Game {
     int32 player_count = 2;
     int32 max_players = 3;
 }
+
+message Player {
+    string id = 1;
+    string color = 2;
+    int32 troop_count = 3;
+}
+
+message Tile {
+    string player_id = 1;
+}
+
+message BoardRow {
+    repeated Tile tiles = 1;
+}
+
+message Board {
+    repeated BoardRow rows = 1;
+}

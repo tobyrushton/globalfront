@@ -3,7 +3,7 @@
 PROTO_DIR := ../proto
 OUT_DIR := ../pb
 
-pbgen: pbgen-mm pbgen-game pbgen-gb
+pbgen: pbgen-mm pbgen-game pbgen-gb pbgen-m
 
 pbgen-mm:
 	protoc --proto_path=$(PROTO_DIR) \
@@ -24,3 +24,10 @@ pbgen-gb:
 		gamebox/v1/gamebox.proto \
 		--go_out=$(OUT_DIR) --go_opt=paths=source_relative \
 		--go-grpc_out=$(OUT_DIR) --go-grpc_opt=paths=source_relative
+
+pbgen-m:
+	protoc --proto_path=$(PROTO_DIR) \
+		messages/v1/messages.proto \
+		--go_out=$(OUT_DIR) --go_opt=paths=source_relative \
+		--go-grpc_out=$(OUT_DIR) --go-grpc_opt=paths=source_relative \
+		--ts_out=$(OUT_DIR)

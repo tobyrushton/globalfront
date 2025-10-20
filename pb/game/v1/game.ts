@@ -27,6 +27,50 @@ export interface Game {
      */
     maxPlayers: number;
 }
+/**
+ * @generated from protobuf message game.v1.Player
+ */
+export interface Player {
+    /**
+     * @generated from protobuf field: string id = 1
+     */
+    id: string;
+    /**
+     * @generated from protobuf field: string color = 2
+     */
+    color: string;
+    /**
+     * @generated from protobuf field: int32 troop_count = 3
+     */
+    troopCount: number;
+}
+/**
+ * @generated from protobuf message game.v1.Tile
+ */
+export interface Tile {
+    /**
+     * @generated from protobuf field: string player_id = 1
+     */
+    playerId: string;
+}
+/**
+ * @generated from protobuf message game.v1.BoardRow
+ */
+export interface BoardRow {
+    /**
+     * @generated from protobuf field: repeated game.v1.Tile tiles = 1
+     */
+    tiles: Tile[];
+}
+/**
+ * @generated from protobuf message game.v1.Board
+ */
+export interface Board {
+    /**
+     * @generated from protobuf field: repeated game.v1.BoardRow rows = 1
+     */
+    rows: BoardRow[];
+}
 // @generated message type with reflection information, may provide speed optimized methods
 class Game$Type extends MessageType<Game> {
     constructor() {
@@ -90,3 +134,207 @@ class Game$Type extends MessageType<Game> {
  * @generated MessageType for protobuf message game.v1.Game
  */
 export const Game = new Game$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Player$Type extends MessageType<Player> {
+    constructor() {
+        super("game.v1.Player", [
+            { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "color", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "troop_count", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Player>): Player {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.id = "";
+        message.color = "";
+        message.troopCount = 0;
+        if (value !== undefined)
+            reflectionMergePartial<Player>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Player): Player {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string id */ 1:
+                    message.id = reader.string();
+                    break;
+                case /* string color */ 2:
+                    message.color = reader.string();
+                    break;
+                case /* int32 troop_count */ 3:
+                    message.troopCount = reader.int32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Player, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string id = 1; */
+        if (message.id !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.id);
+        /* string color = 2; */
+        if (message.color !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.color);
+        /* int32 troop_count = 3; */
+        if (message.troopCount !== 0)
+            writer.tag(3, WireType.Varint).int32(message.troopCount);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message game.v1.Player
+ */
+export const Player = new Player$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Tile$Type extends MessageType<Tile> {
+    constructor() {
+        super("game.v1.Tile", [
+            { no: 1, name: "player_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Tile>): Tile {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.playerId = "";
+        if (value !== undefined)
+            reflectionMergePartial<Tile>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Tile): Tile {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string player_id */ 1:
+                    message.playerId = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Tile, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string player_id = 1; */
+        if (message.playerId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.playerId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message game.v1.Tile
+ */
+export const Tile = new Tile$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class BoardRow$Type extends MessageType<BoardRow> {
+    constructor() {
+        super("game.v1.BoardRow", [
+            { no: 1, name: "tiles", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => Tile }
+        ]);
+    }
+    create(value?: PartialMessage<BoardRow>): BoardRow {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.tiles = [];
+        if (value !== undefined)
+            reflectionMergePartial<BoardRow>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: BoardRow): BoardRow {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated game.v1.Tile tiles */ 1:
+                    message.tiles.push(Tile.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: BoardRow, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated game.v1.Tile tiles = 1; */
+        for (let i = 0; i < message.tiles.length; i++)
+            Tile.internalBinaryWrite(message.tiles[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message game.v1.BoardRow
+ */
+export const BoardRow = new BoardRow$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Board$Type extends MessageType<Board> {
+    constructor() {
+        super("game.v1.Board", [
+            { no: 1, name: "rows", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => BoardRow }
+        ]);
+    }
+    create(value?: PartialMessage<Board>): Board {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.rows = [];
+        if (value !== undefined)
+            reflectionMergePartial<Board>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Board): Board {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated game.v1.BoardRow rows */ 1:
+                    message.rows.push(BoardRow.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Board, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated game.v1.BoardRow rows = 1; */
+        for (let i = 0; i < message.rows.length; i++)
+            BoardRow.internalBinaryWrite(message.rows[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message game.v1.Board
+ */
+export const Board = new Board$Type();

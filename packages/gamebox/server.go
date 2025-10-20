@@ -23,7 +23,7 @@ func New() *GameboxServer {
 }
 
 func (gb *GameboxServer) CreateGame(ctx context.Context, req *pb.CreateGameRequest) (*pb.CreateGameResponse, error) {
-	game, err := gb.s.Spawn(req.Game)
+	game, err := gb.s.Spawn(req.Game, req.PlayerIds)
 	if err != nil {
 		return nil, err
 	}

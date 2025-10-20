@@ -77,6 +77,10 @@ export interface ServerDetails {
      * @generated from protobuf field: string id = 1
      */
     id: string;
+    /**
+     * @generated from protobuf field: string player_id = 2
+     */
+    playerId: string;
 }
 /**
  * @generated from protobuf message matchmaker.v1.JoinError
@@ -352,12 +356,14 @@ export const JoinAcknowledgement = new JoinAcknowledgement$Type();
 class ServerDetails$Type extends MessageType<ServerDetails> {
     constructor() {
         super("matchmaker.v1.ServerDetails", [
-            { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "player_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<ServerDetails>): ServerDetails {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.id = "";
+        message.playerId = "";
         if (value !== undefined)
             reflectionMergePartial<ServerDetails>(this, message, value);
         return message;
@@ -369,6 +375,9 @@ class ServerDetails$Type extends MessageType<ServerDetails> {
             switch (fieldNo) {
                 case /* string id */ 1:
                     message.id = reader.string();
+                    break;
+                case /* string player_id */ 2:
+                    message.playerId = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -385,6 +394,9 @@ class ServerDetails$Type extends MessageType<ServerDetails> {
         /* string id = 1; */
         if (message.id !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.id);
+        /* string player_id = 2; */
+        if (message.playerId !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.playerId);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

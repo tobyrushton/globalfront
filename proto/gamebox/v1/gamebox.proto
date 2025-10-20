@@ -12,6 +12,7 @@ service Gamebox {
 
 message CreateGameRequest {
     game.v1.Game game = 1;
+    repeated string player_ids = 3;
 }
 
 message CreateGameResponse {

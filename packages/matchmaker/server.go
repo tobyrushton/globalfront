@@ -2,7 +2,6 @@ package matchmaker
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/tobyrushton/globalfront/packages/matchmaker/internals/gamemanager"
 	pb "github.com/tobyrushton/globalfront/pb/matchmaker/v1"
@@ -55,8 +54,6 @@ func (s *MatchmakerServer) JoinGame(req *pb.JoinGameRequest, stream pb.Matchmake
 		return nil
 	}
 
-	fmt.Println("Player joined with ID:", playerID)
-
 	select {
 	case <-stream.Context().Done():
 		s.gm.RemovePlayer(playerID)
@@ -72,7 +69,8 @@ func (s *MatchmakerServer) JoinGame(req *pb.JoinGameRequest, stream pb.Matchmake
 		} else {
 			joinUpdate.Update = &pb.JoinUpdate_ServerDetails{
 				ServerDetails: &pb.ServerDetails{
-					Id: update.GameId,
+					Id:       update.GameId,
+					PlayerId: playerID,
 				},
 			}
 		}
