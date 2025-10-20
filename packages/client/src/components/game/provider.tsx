@@ -21,7 +21,7 @@ const GameContext = createContext<TGameContext | null>(null)
 
 export const GameProvider: FC<PropsWithChildren<GameProviderProps>> = ({ children, url, playerId }) => {
     const socketRef = useRef<WebSocket | null>(null) 
-    const { setCountdown } = useStatus()
+    const { setCountdown, startGame } = useStatus()
     const { setPlayers } = usePlayers()
     const { setBoard, handleTileUpdate } = useTiles()
 
@@ -52,6 +52,9 @@ export const GameProvider: FC<PropsWithChildren<GameProviderProps>> = ({ childre
                 break
             case "update":
                 handleTileUpdate(msg.payload.update.updatedTiles)
+                break
+            case "gameStart":
+                startGame()
                 break
             default:
                 console.log("Unhandled message:", msg)

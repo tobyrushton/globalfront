@@ -27,12 +27,15 @@ export const StatusProvider: FC<PropsWithChildren> = ({ children }) => {
 
     return (
         <StatusContext.Provider value={value}>
-            <div 
-                className="absolute h-2 bg-sky-500"
-                style={{
-                    "width": `${((60 - countdown )/ 60) * 100}%`
-                }}
-            />
+            {
+                !gameStarted &&
+                <div 
+                    className="absolute h-2 bg-sky-500"
+                    style={{
+                        "width": `${((60 - countdown )/ 60) * 100}%`
+                    }}
+                />
+        }
             {children}
         </StatusContext.Provider>
     )
