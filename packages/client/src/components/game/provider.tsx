@@ -22,7 +22,7 @@ const GameContext = createContext<TGameContext | null>(null)
 export const GameProvider: FC<PropsWithChildren<GameProviderProps>> = ({ children, url, playerId }) => {
     const socketRef = useRef<WebSocket | null>(null) 
     const { setCountdown, startGame } = useStatus()
-    const { setPlayers } = usePlayers()
+    const { setPlayers, updatePlayerCounts } = usePlayers()
     const { setBoard, handleTileUpdate } = useTiles()
 
     const send = (msg: WebsocketMessage) => {
@@ -52,6 +52,7 @@ export const GameProvider: FC<PropsWithChildren<GameProviderProps>> = ({ childre
                 break
             case "update":
                 handleTileUpdate(msg.payload.update.updatedTiles)
+                updatePlayerCounts(msg.payload.update.troopCountChanges)
                 break
             case "gameStart":
                 startGame()
