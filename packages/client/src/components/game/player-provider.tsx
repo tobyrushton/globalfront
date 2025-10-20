@@ -1,6 +1,6 @@
 "use client"
 
-import { FC, PropsWithChildren, createContext, useContext, useState, useMemo } from "react"
+import { FC, PropsWithChildren, createContext, useContext, useState, useMemo, useEffect, useEffectEvent } from "react"
 import { Player } from "@globalfront/pb/game/v1/game"
 
 type TPlayerContext = {
@@ -15,15 +15,20 @@ export const PlayerProvider: FC<PropsWithChildren> = ({ children }) => {
     const [players, setPlayers] = useState<Map<string,Player>>(new Map<string, Player>())
 
     const updatePlayerCounts = (updates: { [key: string]: number }) => {
-        const tmpPlayers = new Map(players)
-        for (const [playerId, count] of Object.entries(updates)) {
-            const player = tmpPlayers.get(playerId)
-            if (player) {
-                player.troopCount = count
-                tmpPlayers.set(playerId, player)
+        if (Object.keys(updates).length === 0) return
+
+        setPlayers(prev => {
+            const tmpPlayers = new Map(prev)
+
+            for (const [playerId, count] of Object.entries(updates)) {
+                const player = tmpPlayers.get(playerId)
+                if (player) {
+                    tmpPlayers.set(playerId, { ...player, troopCount: count })
+                }
             }
-        }
-        setPlayers(tmpPlayers)
+
+            return tmpPlayers
+        })
     }
 
     const value = useMemo(() => ({ players, setPlayers, updatePlayerCounts }), [players])

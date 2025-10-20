@@ -27,6 +27,8 @@ export const TileProvider: FC<PropsWithChildren> = ({ children }) => {
     }
 
     const handleTileUpdate = (updates: { [key: number]: string }) => {
+       if (Object.keys(updates).length === 0) return
+
         setTiles(prevTiles => {
             const newTiles = prevTiles.map(row => [...row])
 

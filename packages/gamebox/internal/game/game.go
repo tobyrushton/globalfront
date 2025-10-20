@@ -88,8 +88,7 @@ func (g *Game) GetPort() int {
 }
 
 func (g *Game) startGame() {
-	for i := 60; i >= 1; i-- {
-		fmt.Println("Starting game in", i, "seconds")
+	for i := 30; i >= 1; i-- {
 		g.wsServer.Broadcast(&v1.WebsocketMessage{
 			Type: v1.MessageType_MESSAGE_START_COUNTDOWN,
 			Payload: &v1.WebsocketMessage_StartCountdown{
@@ -104,6 +103,7 @@ func (g *Game) startGame() {
 		Type:    v1.MessageType_MESSAGE_GAME_START,
 		Payload: &v1.WebsocketMessage_GameStart{},
 	})
+	g.started = true
 }
 
 func (g *Game) handleMsg(msg *v1.WebsocketMessage) {
@@ -148,23 +148,49 @@ func (g *Game) handleSpawn(playerId string, tileId int32) {
 
 func (g *Game) updateLoop() {
 	ticker := time.NewTicker(time.Second / 20)
+	tick := 0
 
 	for {
+		tick++
 		select {
 		case <-g.ctx.Done():
 			return
 		case <-ticker.C:
-			boardUpdates := g.board.GetChangedTiles()
-			if len(boardUpdates) > 0 {
-				g.wsServer.Broadcast(&v1.WebsocketMessage{
-					Type: v1.MessageType_MESSAGE_UPDATE,
-					Payload: &v1.WebsocketMessage_Update{
-						Update: &v1.Update{
-							UpdatedTiles: boardUpdates,
-						},
-					},
-				})
+			msg := &v1.WebsocketMessage{
+				Type: v1.MessageType_MESSAGE_UPDATE,
+				Payload: &v1.WebsocketMessage_Update{
+					Update: &v1.Update{},
+				},
+			}
+			send := false
+			if boardUpdates := g.board.GetChangedTiles(); len(boardUpdates) > 0 {
+				msg.GetUpdate().UpdatedTiles = boardUpdates
+				send = true
+			}
+			if g.started && tick%20 == 0 {
+				if troopUpdates := g.calculateTroopUpdates(); len(troopUpdates) > 0 {
+					msg.GetUpdate().TroopCountChanges = troopUpdates
+					send = true
+				}
+			}
+			if send {
+				g.wsServer.Broadcast(msg)
 			}
 		}
 	}
+}
+
+func (g *Game) calculateTroopUpdates() map[string]int32 {
+	updates := make(map[string]int32)
+
+	g.playersMu.Lock()
+	defer g.playersMu.Unlock()
+
+	for playerId := range g.players {
+		updatedCount := int32(float32(g.players[playerId].TroopCount) * 1.05)
+		updates[playerId] = updatedCount
+		g.players[playerId].TroopCount = updatedCount
+	}
+
+	return updates
 }
