@@ -53,6 +53,7 @@ message Spawn {
 
 message Update {
     map<int32, string> updated_tiles = 1;
+    map<string, int32> troop_count_changes = 2;
 }
 
 message Attack {

@@ -128,6 +128,12 @@ export interface Update {
     updatedTiles: {
         [key: number]: string;
     };
+    /**
+     * @generated from protobuf field: map<string, int32> troop_count_changes = 2
+     */
+    troopCountChanges: {
+        [key: string]: number;
+    };
 }
 /**
  * @generated from protobuf message messages.v1.Attack
@@ -546,12 +552,14 @@ export const Spawn = new Spawn$Type();
 class Update$Type extends MessageType$<Update> {
     constructor() {
         super("messages.v1.Update", [
-            { no: 1, name: "updated_tiles", kind: "map", K: 5 /*ScalarType.INT32*/, V: { kind: "scalar", T: 9 /*ScalarType.STRING*/ } }
+            { no: 1, name: "updated_tiles", kind: "map", K: 5 /*ScalarType.INT32*/, V: { kind: "scalar", T: 9 /*ScalarType.STRING*/ } },
+            { no: 2, name: "troop_count_changes", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "scalar", T: 5 /*ScalarType.INT32*/ } }
         ]);
     }
     create(value?: PartialMessage<Update>): Update {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.updatedTiles = {};
+        message.troopCountChanges = {};
         if (value !== undefined)
             reflectionMergePartial<Update>(this, message, value);
         return message;
@@ -563,6 +571,9 @@ class Update$Type extends MessageType$<Update> {
             switch (fieldNo) {
                 case /* map<int32, string> updated_tiles */ 1:
                     this.binaryReadMap1(message.updatedTiles, reader, options);
+                    break;
+                case /* map<string, int32> troop_count_changes */ 2:
+                    this.binaryReadMap2(message.troopCountChanges, reader, options);
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -591,10 +602,29 @@ class Update$Type extends MessageType$<Update> {
         }
         map[key ?? 0] = val ?? "";
     }
+    private binaryReadMap2(map: Update["troopCountChanges"], reader: IBinaryReader, options: BinaryReadOptions): void {
+        let len = reader.uint32(), end = reader.pos + len, key: keyof Update["troopCountChanges"] | undefined, val: Update["troopCountChanges"][any] | undefined;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case 1:
+                    key = reader.string();
+                    break;
+                case 2:
+                    val = reader.int32();
+                    break;
+                default: throw new globalThis.Error("unknown map entry field for messages.v1.Update.troop_count_changes");
+            }
+        }
+        map[key ?? ""] = val ?? 0;
+    }
     internalBinaryWrite(message: Update, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
         /* map<int32, string> updated_tiles = 1; */
         for (let k of globalThis.Object.keys(message.updatedTiles))
             writer.tag(1, WireType.LengthDelimited).fork().tag(1, WireType.Varint).int32(parseInt(k)).tag(2, WireType.LengthDelimited).string(message.updatedTiles[k as any]).join();
+        /* map<string, int32> troop_count_changes = 2; */
+        for (let k of globalThis.Object.keys(message.troopCountChanges))
+            writer.tag(2, WireType.LengthDelimited).fork().tag(1, WireType.LengthDelimited).string(k).tag(2, WireType.Varint).int32(message.troopCountChanges[k]).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

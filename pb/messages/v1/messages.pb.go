@@ -485,10 +485,11 @@ func (x *Spawn) GetTileId() int32 {
 }
 
 type Update struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	UpdatedTiles  map[int32]string       `protobuf:"bytes,1,rep,name=updated_tiles,json=updatedTiles,proto3" json:"updated_tiles,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	UpdatedTiles      map[int32]string       `protobuf:"bytes,1,rep,name=updated_tiles,json=updatedTiles,proto3" json:"updated_tiles,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	TroopCountChanges map[string]int32       `protobuf:"bytes,2,rep,name=troop_count_changes,json=troopCountChanges,proto3" json:"troop_count_changes,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *Update) Reset() {
@@ -524,6 +525,13 @@ func (*Update) Descriptor() ([]byte, []int) {
 func (x *Update) GetUpdatedTiles() map[int32]string {
 	if x != nil {
 		return x.UpdatedTiles
+	}
+	return nil
+}
+
+func (x *Update) GetTroopCountChanges() map[string]int32 {
+	if x != nil {
+		return x.TroopCountChanges
 	}
 	return nil
 }
@@ -614,12 +622,16 @@ const file_messages_v1_messages_proto_rawDesc = "" +
 	"\x05board\x18\x02 \x01(\v2\x0e.game.v1.BoardR\x05board\"=\n" +
 	"\x05Spawn\x12\x1b\n" +
 	"\tplayer_id\x18\x01 \x01(\tR\bplayerId\x12\x17\n" +
-	"\atile_id\x18\x02 \x01(\x05R\x06tileId\"\x95\x01\n" +
+	"\atile_id\x18\x02 \x01(\x05R\x06tileId\"\xb7\x02\n" +
 	"\x06Update\x12J\n" +
-	"\rupdated_tiles\x18\x01 \x03(\v2%.messages.v1.Update.UpdatedTilesEntryR\fupdatedTiles\x1a?\n" +
+	"\rupdated_tiles\x18\x01 \x03(\v2%.messages.v1.Update.UpdatedTilesEntryR\fupdatedTiles\x12Z\n" +
+	"\x13troop_count_changes\x18\x02 \x03(\v2*.messages.v1.Update.TroopCountChangesEntryR\x11troopCountChanges\x1a?\n" +
 	"\x11UpdatedTilesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\x05R\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"_\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aD\n" +
+	"\x16TroopCountChangesEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"_\n" +
 	"\x06Attack\x12\x1b\n" +
 	"\tplayer_id\x18\x01 \x01(\tR\bplayerId\x12\x17\n" +
 	"\atile_id\x18\x02 \x01(\x05R\x06tileId\x12\x1f\n" +
@@ -648,7 +660,7 @@ func file_messages_v1_messages_proto_rawDescGZIP() []byte {
 }
 
 var file_messages_v1_messages_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_messages_v1_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_messages_v1_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_messages_v1_messages_proto_goTypes = []any{
 	(MessageType)(0),         // 0: messages.v1.MessageType
 	(*WebsocketMessage)(nil), // 1: messages.v1.WebsocketMessage
@@ -660,8 +672,9 @@ var file_messages_v1_messages_proto_goTypes = []any{
 	(*Update)(nil),           // 7: messages.v1.Update
 	(*Attack)(nil),           // 8: messages.v1.Attack
 	nil,                      // 9: messages.v1.Update.UpdatedTilesEntry
-	(*v1.Player)(nil),        // 10: game.v1.Player
-	(*v1.Board)(nil),         // 11: game.v1.Board
+	nil,                      // 10: messages.v1.Update.TroopCountChangesEntry
+	(*v1.Player)(nil),        // 11: game.v1.Player
+	(*v1.Board)(nil),         // 12: game.v1.Board
 }
 var file_messages_v1_messages_proto_depIdxs = []int32{
 	0,  // 0: messages.v1.WebsocketMessage.type:type_name -> messages.v1.MessageType
@@ -672,14 +685,15 @@ var file_messages_v1_messages_proto_depIdxs = []int32{
 	6,  // 5: messages.v1.WebsocketMessage.spawn:type_name -> messages.v1.Spawn
 	7,  // 6: messages.v1.WebsocketMessage.update:type_name -> messages.v1.Update
 	8,  // 7: messages.v1.WebsocketMessage.attack:type_name -> messages.v1.Attack
-	10, // 8: messages.v1.JoinGameResponse.players:type_name -> game.v1.Player
-	11, // 9: messages.v1.JoinGameResponse.board:type_name -> game.v1.Board
+	11, // 8: messages.v1.JoinGameResponse.players:type_name -> game.v1.Player
+	12, // 9: messages.v1.JoinGameResponse.board:type_name -> game.v1.Board
 	9,  // 10: messages.v1.Update.updated_tiles:type_name -> messages.v1.Update.UpdatedTilesEntry
-	11, // [11:11] is the sub-list for method output_type
-	11, // [11:11] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	10, // 11: messages.v1.Update.troop_count_changes:type_name -> messages.v1.Update.TroopCountChangesEntry
+	12, // [12:12] is the sub-list for method output_type
+	12, // [12:12] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_messages_v1_messages_proto_init() }
@@ -702,7 +716,7 @@ func file_messages_v1_messages_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_messages_v1_messages_proto_rawDesc), len(file_messages_v1_messages_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   9,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
