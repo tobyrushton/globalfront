@@ -58,7 +58,21 @@ func (b *Board) Board() *v1.Board {
 	return board
 }
 
+func (b *Board) clearPlayer(playerId string) {
+	b.tilesMu.Lock()
+	defer b.tilesMu.Unlock()
+
+	for i := 0; i < b.width; i++ {
+		for j := 0; j < b.height; j++ {
+			if b.tiles[i][j].PlayerId() == playerId {
+				b.tiles[i][j].SetPlayerId("")
+			}
+		}
+	}
+}
+
 func (b *Board) SetPlayerSpawn(playerId string, tileId int32) {
+	b.clearPlayer(playerId)
 	b.tilesMu.Lock()
 	defer b.tilesMu.Unlock()
 
