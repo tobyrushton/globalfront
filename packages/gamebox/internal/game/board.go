@@ -121,8 +121,53 @@ func (b *Board) GetTile(tileId int32) *Tile {
 	b.tilesMu.Lock()
 	defer b.tilesMu.Unlock()
 
-	x := int(tileId / 200)
-	y := int(tileId % 200)
+	x, y := CoordinatesFromTileId(tileId)
 
 	return b.tiles[x][y]
+}
+
+func (b *Board) FindBorder(player1, player2 string, start int32) []int32 {
+	height, width := len(b.tiles), len(b.tiles[0])
+
+	borderTiles := make([]int32, 0)
+
+	// complete a dfs in order to find the border cells
+	dirs := [][2]int{{0, 1}, {1, 0}, {0, -1}, {-1, 0}}
+	visited := make(map[int32]struct{})
+	x, y := CoordinatesFromTileId(start)
+	s := [][2]int{{x, y}}
+
+	for len(s) > 0 {
+		tile := s[len(s)-1]
+		s = s[:len(s)-1]
+
+		for _, dir := range dirs {
+			nx, ny := tile[0]+dir[0], tile[1]+dir[1]
+			nid := TileId(nx, ny)
+
+			if _, seen := visited[nid]; !seen &&
+				nx >= 0 &&
+				ny >= 0 &&
+				nx < height &&
+				ny < width {
+				visited[nid] = struct{}{}
+				ntile := b.tiles[nx][ny]
+				if ntile.PlayerId() == player2 {
+					borderTiles = append(borderTiles, nid)
+				}
+			}
+		}
+	}
+
+	return borderTiles
+}
+
+func TileId(x, y int) int32 {
+	return int32(x*200 + y)
+}
+
+func CoordinatesFromTileId(tileId int32) (int, int) {
+	x := int(tileId / 200)
+	y := int(tileId % 200)
+	return x, y
 }
