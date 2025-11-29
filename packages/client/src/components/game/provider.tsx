@@ -1,11 +1,12 @@
 "use client"
 
-import { FC, PropsWithChildren, createContext, useContext, useEffect, useRef } from "react"
+import { FC, PropsWithChildren, createContext, useContext, useEffect, useRef, useState } from "react"
 import { WebsocketMessage, MessageType, JoinGame, JoinGameResponse } from "@globalfront/pb/messages/v1/messages"
 import { Player, Board } from "@globalfront/pb/game/v1/game"
 import { useStatus } from "./status-provider"
 import { usePlayers } from "./player-provider"
 import { useTiles } from "./tile-provider"
+import { PlayerInfo } from "./player-info"
 
 type GameProviderProps = {
     url: string
@@ -15,14 +16,18 @@ type GameProviderProps = {
 type TGameContext = {
     send: (msg: WebsocketMessage) => void
     playerId: string
+    player: Player
+    attackPercentage: number
+    setAttackPercentage: (percentage: number) => void
 }
 
 const GameContext = createContext<TGameContext | null>(null)
 
 export const GameProvider: FC<PropsWithChildren<GameProviderProps>> = ({ children, url, playerId }) => {
+    const [attackPercentage, setAttackPercentage] = useState(30)
     const socketRef = useRef<WebSocket | null>(null) 
-    const { setCountdown, startGame } = useStatus()
-    const { setPlayers, updatePlayerCounts } = usePlayers()
+    const { setCountdown, startGame, gameStarted } = useStatus()
+    const { setPlayers, updatePlayerCounts, players } = usePlayers()
     const { setBoard, handleTileUpdate } = useTiles()
 
     const send = (msg: WebsocketMessage) => {
@@ -89,8 +94,19 @@ export const GameProvider: FC<PropsWithChildren<GameProviderProps>> = ({ childre
     }, [url])
     
     return (
-        <GameContext.Provider value={{ send, playerId }}>
+        <GameContext.Provider 
+            value={{ 
+                send, 
+                playerId, 
+                player: players.get(playerId) as Player, 
+                attackPercentage, 
+                setAttackPercentage 
+            }}
+        >
             {children}
+            {
+                gameStarted && <PlayerInfo />        
+            }
         </GameContext.Provider>
     )
 }
