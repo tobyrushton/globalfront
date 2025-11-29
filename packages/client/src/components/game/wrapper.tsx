@@ -37,7 +37,7 @@ export const GameWrapper: FC<PropsWithChildren> = ({ children }) => {
 
     return (
         <div 
-            className="absolute flex w-full h-full justify-center items-center"
+            className="absolute flex w-full h-full justify-center items-center bg-background"
             onMouseDown={onMouseDown}
             onMouseUp={onMouseUp}
             onMouseMove={handleMouseMove} 

@@ -60,6 +60,12 @@ export interface WebsocketMessage {
          */
         update: Update;
     } | {
+        oneofKind: "attack";
+        /**
+         * @generated from protobuf field: messages.v1.Attack attack = 8
+         */
+        attack: Attack;
+    } | {
         oneofKind: undefined;
     };
 }
@@ -122,6 +128,29 @@ export interface Update {
     updatedTiles: {
         [key: number]: string;
     };
+    /**
+     * @generated from protobuf field: map<string, int32> troop_count_changes = 2
+     */
+    troopCountChanges: {
+        [key: string]: number;
+    };
+}
+/**
+ * @generated from protobuf message messages.v1.Attack
+ */
+export interface Attack {
+    /**
+     * @generated from protobuf field: string player_id = 1
+     */
+    playerId: string;
+    /**
+     * @generated from protobuf field: int32 tile_id = 2
+     */
+    tileId: number;
+    /**
+     * @generated from protobuf field: int32 troop_count = 3
+     */
+    troopCount: number;
 }
 /**
  * @generated from protobuf enum messages.v1.MessageType
@@ -154,7 +183,11 @@ export enum MessageType {
     /**
      * @generated from protobuf enum value: MESSAGE_UPDATE = 6;
      */
-    MESSAGE_UPDATE = 6
+    MESSAGE_UPDATE = 6,
+    /**
+     * @generated from protobuf enum value: MESSAGE_ATTACK = 7;
+     */
+    MESSAGE_ATTACK = 7
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class WebsocketMessage$Type extends MessageType$<WebsocketMessage> {
@@ -166,7 +199,8 @@ class WebsocketMessage$Type extends MessageType$<WebsocketMessage> {
             { no: 4, name: "join_game", kind: "message", oneof: "payload", T: () => JoinGame },
             { no: 5, name: "join_game_response", kind: "message", oneof: "payload", T: () => JoinGameResponse },
             { no: 6, name: "spawn", kind: "message", oneof: "payload", T: () => Spawn },
-            { no: 7, name: "update", kind: "message", oneof: "payload", T: () => Update }
+            { no: 7, name: "update", kind: "message", oneof: "payload", T: () => Update },
+            { no: 8, name: "attack", kind: "message", oneof: "payload", T: () => Attack }
         ]);
     }
     create(value?: PartialMessage<WebsocketMessage>): WebsocketMessage {
@@ -221,6 +255,12 @@ class WebsocketMessage$Type extends MessageType$<WebsocketMessage> {
                         update: Update.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).update)
                     };
                     break;
+                case /* messages.v1.Attack attack */ 8:
+                    message.payload = {
+                        oneofKind: "attack",
+                        attack: Attack.internalBinaryRead(reader, reader.uint32(), options, (message.payload as any).attack)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -254,6 +294,9 @@ class WebsocketMessage$Type extends MessageType$<WebsocketMessage> {
         /* messages.v1.Update update = 7; */
         if (message.payload.oneofKind === "update")
             Update.internalBinaryWrite(message.payload.update, writer.tag(7, WireType.LengthDelimited).fork(), options).join();
+        /* messages.v1.Attack attack = 8; */
+        if (message.payload.oneofKind === "attack")
+            Attack.internalBinaryWrite(message.payload.attack, writer.tag(8, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -509,12 +552,14 @@ export const Spawn = new Spawn$Type();
 class Update$Type extends MessageType$<Update> {
     constructor() {
         super("messages.v1.Update", [
-            { no: 1, name: "updated_tiles", kind: "map", K: 5 /*ScalarType.INT32*/, V: { kind: "scalar", T: 9 /*ScalarType.STRING*/ } }
+            { no: 1, name: "updated_tiles", kind: "map", K: 5 /*ScalarType.INT32*/, V: { kind: "scalar", T: 9 /*ScalarType.STRING*/ } },
+            { no: 2, name: "troop_count_changes", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "scalar", T: 5 /*ScalarType.INT32*/ } }
         ]);
     }
     create(value?: PartialMessage<Update>): Update {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.updatedTiles = {};
+        message.troopCountChanges = {};
         if (value !== undefined)
             reflectionMergePartial<Update>(this, message, value);
         return message;
@@ -526,6 +571,9 @@ class Update$Type extends MessageType$<Update> {
             switch (fieldNo) {
                 case /* map<int32, string> updated_tiles */ 1:
                     this.binaryReadMap1(message.updatedTiles, reader, options);
+                    break;
+                case /* map<string, int32> troop_count_changes */ 2:
+                    this.binaryReadMap2(message.troopCountChanges, reader, options);
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -554,10 +602,29 @@ class Update$Type extends MessageType$<Update> {
         }
         map[key ?? 0] = val ?? "";
     }
+    private binaryReadMap2(map: Update["troopCountChanges"], reader: IBinaryReader, options: BinaryReadOptions): void {
+        let len = reader.uint32(), end = reader.pos + len, key: keyof Update["troopCountChanges"] | undefined, val: Update["troopCountChanges"][any] | undefined;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case 1:
+                    key = reader.string();
+                    break;
+                case 2:
+                    val = reader.int32();
+                    break;
+                default: throw new globalThis.Error("unknown map entry field for messages.v1.Update.troop_count_changes");
+            }
+        }
+        map[key ?? ""] = val ?? 0;
+    }
     internalBinaryWrite(message: Update, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
         /* map<int32, string> updated_tiles = 1; */
         for (let k of globalThis.Object.keys(message.updatedTiles))
             writer.tag(1, WireType.LengthDelimited).fork().tag(1, WireType.Varint).int32(parseInt(k)).tag(2, WireType.LengthDelimited).string(message.updatedTiles[k as any]).join();
+        /* map<string, int32> troop_count_changes = 2; */
+        for (let k of globalThis.Object.keys(message.troopCountChanges))
+            writer.tag(2, WireType.LengthDelimited).fork().tag(1, WireType.LengthDelimited).string(k).tag(2, WireType.Varint).int32(message.troopCountChanges[k]).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -568,3 +635,66 @@ class Update$Type extends MessageType$<Update> {
  * @generated MessageType for protobuf message messages.v1.Update
  */
 export const Update = new Update$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Attack$Type extends MessageType$<Attack> {
+    constructor() {
+        super("messages.v1.Attack", [
+            { no: 1, name: "player_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "tile_id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 3, name: "troop_count", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Attack>): Attack {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.playerId = "";
+        message.tileId = 0;
+        message.troopCount = 0;
+        if (value !== undefined)
+            reflectionMergePartial<Attack>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Attack): Attack {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string player_id */ 1:
+                    message.playerId = reader.string();
+                    break;
+                case /* int32 tile_id */ 2:
+                    message.tileId = reader.int32();
+                    break;
+                case /* int32 troop_count */ 3:
+                    message.troopCount = reader.int32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Attack, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string player_id = 1; */
+        if (message.playerId !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.playerId);
+        /* int32 tile_id = 2; */
+        if (message.tileId !== 0)
+            writer.tag(2, WireType.Varint).int32(message.tileId);
+        /* int32 troop_count = 3; */
+        if (message.troopCount !== 0)
+            writer.tag(3, WireType.Varint).int32(message.troopCount);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message messages.v1.Attack
+ */
+export const Attack = new Attack$Type();

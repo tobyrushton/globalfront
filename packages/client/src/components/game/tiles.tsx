@@ -11,7 +11,7 @@ import { convertCoordinatesToTileId } from "@/lib/tiles"
 export const GameTiles: FC = () => {
     const { tiles } = useTiles()
     const { players } = usePlayers()
-    const { send, playerId } = useGame()
+    const { send, playerId, player, attackPercentage } = useGame()
     const { gameStarted } = useStatus()
 
     const onClick = (row: number, col: number) => {
@@ -23,6 +23,18 @@ export const GameTiles: FC = () => {
                     spawn: Spawn.create({
                         playerId, tileId: convertCoordinatesToTileId(row, col)
                     })
+                }
+            }))
+        } else {
+            send(WebsocketMessage.create({
+                type: MessageType.MESSAGE_ATTACK,
+                payload: {
+                    oneofKind: "attack",
+                    attack: {
+                        playerId, 
+                        tileId: convertCoordinatesToTileId(row, col),
+                        troopCount: Math.floor(player!.troopCount * (attackPercentage / 100))
+                    }
                 }
             }))
         }
