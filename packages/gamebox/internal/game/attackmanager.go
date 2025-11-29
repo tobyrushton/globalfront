@@ -33,17 +33,17 @@ func NewAttackManager(board *Board, players *map[string]*v1.Player) *AttackManag
 	}
 }
 
-func (am *AttackManager) InitAttack(playerId string, tileId int32, troopCount int32) {
+func (am *AttackManager) InitAttack(playerId string, tileId int32, troopCount int32) bool {
 	tile := am.board.GetTile(tileId)
 	if tile == nil {
-		return
+		return false
 	}
 	if tile.PlayerId() == playerId {
-		return
+		return false
 	}
 	border := am.board.FindBorder(tile.PlayerId(), playerId, tileId)
 	if len(border) == 0 {
-		return
+		return false
 	}
 
 	am.attacksMu.Lock()
@@ -64,6 +64,7 @@ func (am *AttackManager) InitAttack(playerId string, tileId int32, troopCount in
 	} else {
 		am.startAttack(playerId, tile.PlayerId(), troopCount, border)
 	}
+	return true
 }
 
 func (am *AttackManager) startAttack(playerFrom, playerTo string, troopCount int32, border []int32) {

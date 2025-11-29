@@ -155,7 +155,11 @@ func (g *Game) handleSpawn(playerId string, tileId int32) {
 }
 
 func (g *Game) handleAttack(attackerId string, tileId int32, troopCount int32) {
-	g.am.InitAttack(attackerId, tileId, troopCount)
+	if success := g.am.InitAttack(attackerId, tileId, troopCount); success {
+		g.playersMu.Lock()
+		g.players[attackerId].TroopCount -= troopCount
+		g.playersMu.Unlock()
+	}
 }
 
 func (g *Game) updateLoop() {
