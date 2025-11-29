@@ -30,6 +30,8 @@ type Game struct {
 	players   map[string]*pb.Player
 
 	board *Board
+
+	am *AttackManager
 }
 
 func New(port int, game *pb.Game, players []string) *Game {
@@ -45,6 +47,9 @@ func New(port int, game *pb.Game, players []string) *Game {
 
 	msgChan := make(chan *v1.WebsocketMessage, 100)
 
+	board := NewBoard()
+	am := NewAttackManager(board)
+
 	return &Game{
 		ctx:      context.TODO(),
 		port:     port,
@@ -53,7 +58,8 @@ func New(port int, game *pb.Game, players []string) *Game {
 		started:  false,
 		players:  playerMap,
 		msgChan:  msgChan,
-		board:    NewBoard(),
+		board:    board,
+		am:       am,
 	}
 }
 
@@ -115,6 +121,8 @@ func (g *Game) handleMsg(msg *v1.WebsocketMessage) {
 		}
 	case *v1.WebsocketMessage_Spawn:
 		g.handleSpawn(p.Spawn.PlayerId, p.Spawn.TileId)
+	case *v1.WebsocketMessage_Attack:
+		g.handleAttack(p.Attack.PlayerId, p.Attack.TileId, p.Attack.TroopCount)
 	default:
 		fmt.Println("Unhandled message type:", msg.Type)
 	}
@@ -144,6 +152,10 @@ func (g *Game) joinPlayer(playerId string) error {
 
 func (g *Game) handleSpawn(playerId string, tileId int32) {
 	g.board.SetPlayerSpawn(playerId, tileId)
+}
+
+func (g *Game) handleAttack(attackerId string, tileId int32, troopCount int32) {
+	g.am.InitAttack(attackerId, tileId, troopCount)
 }
 
 func (g *Game) updateLoop() {
