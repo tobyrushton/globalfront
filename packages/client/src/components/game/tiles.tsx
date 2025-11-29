@@ -1,6 +1,6 @@
 "use client"
 
-import { FC } from "react"
+import { FC, useEffect, useRef } from "react"
 import { useTiles } from "./tile-provider"
 import { usePlayers } from "./player-provider"
 import { useGame } from "./provider"
@@ -9,10 +9,14 @@ import { MessageType, Spawn, WebsocketMessage } from "@globalfront/pb/messages/v
 import { convertCoordinatesToTileId } from "@/lib/tiles"
 
 export const GameTiles: FC = () => {
+    const canvasRef = useRef<HTMLCanvasElement>(null)
+
     const { tiles } = useTiles()
     const { players } = usePlayers()
-    const { send, playerId, player, attackPercentage } = useGame()
+    const { send, playerId, player, attackPercentage, scale } = useGame()
     const { gameStarted } = useStatus()
+
+    const cellSize = 10;
 
     const onClick = (row: number, col: number) => {
         if (!gameStarted) {
@@ -38,24 +42,43 @@ export const GameTiles: FC = () => {
                 }
             }))
         }
+    } 
+
+    useEffect(() => {
+        const canvas = canvasRef.current as HTMLCanvasElement
+        const ctx = canvas.getContext("2d") as CanvasRenderingContext2D
+
+        canvas.width = tiles[0].length * cellSize
+        canvas.height = tiles.length * cellSize
+
+        tiles.forEach((row, y) => {
+            row.forEach((tile, x) => {
+                if (tile != "0") {
+                    ctx.fillStyle = players.get(tile)?.color || "#000000"
+                    ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize)
+                }
+            })
+        })
+
+    }, [tiles])
+
+    const handleClick = (e: MouseEvent) => {
+        
     }
 
     return (
-        <div className="absolute">
-            {tiles.map((row, rowIndex) => (
-                <div key={rowIndex} className="flex">
-                    {row.map((_, colIndex) => (
-                        <div 
-                            key={colIndex} 
-                            className="w-[10px] h-[10px]"
-                            onClick={() => onClick(rowIndex, colIndex)}
-                            style={{ 
-                                backgroundColor: players.get(tiles[rowIndex][colIndex])?.color || 'transparent' 
-                            }}
-                        />
-                    ))}
-                </div>
-            ))}
-        </div>
+        <canvas 
+            className="absolute"
+            ref={canvasRef}
+            onClick={e => {
+                const rect = canvasRef.current?.getBoundingClientRect()
+                const cssX = (e.clientX - (rect?.left || 0)) / scale
+                const cssY = (e.clientY - (rect?.top || 0)) / scale
+                const x = Math.floor(cssX / cellSize)
+                const y = Math.floor(cssY / cellSize)
+
+                onClick(y, x)
+            }}
+        />
     )
 }

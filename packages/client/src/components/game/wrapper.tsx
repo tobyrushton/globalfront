@@ -1,6 +1,7 @@
 "use client"
 
 import { FC, useState, useRef, PropsWithChildren, MouseEvent, WheelEvent } from "react";
+import { useGame } from "./provider";
 
 type Coordinates = {
     x: number,
@@ -9,9 +10,9 @@ type Coordinates = {
 
 export const GameWrapper: FC<PropsWithChildren> = ({ children }) => {
     const [position, setPosition] = useState<Coordinates>({ x: 0, y: 0 })
-    const [scale, setScale] = useState<number>(1)
     const [dragging, setDragging] = useState<boolean>(false)
     const lastPosition = useRef<Coordinates>({ x: 0, y: 0 })
+    const { scale, setScale } = useGame()
 
     const onMouseDown = (e: MouseEvent) => {
         setDragging(true)

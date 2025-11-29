@@ -1,6 +1,7 @@
 package game
 
 import (
+	"fmt"
 	"math"
 	"sync"
 
@@ -86,7 +87,7 @@ func (am *AttackManager) CalculateAttacks() {
 
 	for playerFrom, attacks := range am.attacks {
 		for playerTo, attack := range attacks {
-			defendingTroops := int32(0)
+			defendingTroops := int32(1)
 			// as wilderness won't have any troops
 			if defender, exists := (*am.players)[playerTo]; exists {
 				defendingTroops = defender.TroopCount
@@ -99,7 +100,7 @@ func (am *AttackManager) CalculateAttacks() {
 			} else {
 				attack.troopCount = remainingAttackers
 			}
-			am.board.AdvancePlayer(attack.border, playerFrom, playerTo, captured)
+			attack.border = am.board.AdvancePlayer(attack.border, playerFrom, playerTo, captured)
 		}
 	}
 }
@@ -108,6 +109,7 @@ func (am *AttackManager) calculateAdvance(defendingTroops, attackingTroops, bord
 	a := math.Pow(float64(attackingTroops), am.k)
 	d := math.Pow(float64(defendingTroops), am.k)
 	ratio := a / (a + d)
+	fmt.Println("Attack Ratio:", ratio, "a:", a, "d:", d)
 
 	captured := int32(ratio * float64(borderLength))
 
@@ -116,9 +118,12 @@ func (am *AttackManager) calculateAdvance(defendingTroops, attackingTroops, bord
 	}
 
 	frac := float64(captured) / float64(borderLength)
+	fmt.Println("Fraction Captured:", frac)
 
 	remainingAttackers := int32(float64(attackingTroops) * (1 - frac))
 	remainingDefenders := int32(float64(defendingTroops) * (1 - frac))
+
+	fmt.Println("Attack Result - Attacking Troops:", attackingTroops, "Defending Troops:", defendingTroops, "Captured:", captured, "Remaining Attackers:", remainingAttackers, "Remaining Defenders:", remainingDefenders)
 
 	return captured, remainingAttackers, remainingDefenders
 }

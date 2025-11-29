@@ -13,7 +13,7 @@ const TileContext = createContext<TTileContext | null>(null)
 
 export const TileProvider: FC<PropsWithChildren> = ({ children }) => {
     const [tiles, setTiles] = useState<string[][]>(
-        Array.from({ length: 200 }, () => Array.from({ length: 200 }, () => ""))
+        Array.from({ length: 200 }, () => Array.from({ length: 200 }, () => "0"))
     )
 
     const setBoard = (board: Board) => {
