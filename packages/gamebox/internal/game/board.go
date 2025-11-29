@@ -116,3 +116,13 @@ func (b *Board) GetChangedTiles() map[int32]string {
 
 	return changedTiles
 }
+
+func (b *Board) GetTile(tileId int32) *Tile {
+	b.tilesMu.Lock()
+	defer b.tilesMu.Unlock()
+
+	x := int(tileId / 200)
+	y := int(tileId % 200)
+
+	return b.tiles[x][y]
+}
