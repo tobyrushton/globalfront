@@ -19,12 +19,16 @@ type TGameContext = {
     player: Player
     attackPercentage: number
     setAttackPercentage: (percentage: number) => void
+    scale: number
+    setScale: (scale: number) => void
 }
 
 const GameContext = createContext<TGameContext | null>(null)
 
 export const GameProvider: FC<PropsWithChildren<GameProviderProps>> = ({ children, url, playerId }) => {
     const [attackPercentage, setAttackPercentage] = useState(30)
+    // for tracking the zoom level of the game board
+    const [scale, setScale] = useState(1)
     const socketRef = useRef<WebSocket | null>(null) 
     const { setCountdown, startGame, gameStarted } = useStatus()
     const { setPlayers, updatePlayerCounts, players } = usePlayers()
@@ -100,7 +104,9 @@ export const GameProvider: FC<PropsWithChildren<GameProviderProps>> = ({ childre
                 playerId, 
                 player: players.get(playerId) as Player, 
                 attackPercentage, 
-                setAttackPercentage 
+                setAttackPercentage ,
+                scale,
+                setScale
             }}
         >
             {children}
