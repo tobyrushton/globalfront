@@ -32,7 +32,7 @@ const (
 	MessageType_MESSAGE_JOIN_GAME_RESPONSE MessageType = 4
 	MessageType_MESSAGE_SPAWN              MessageType = 5
 	MessageType_MESSAGE_UPDATE             MessageType = 6
-	MessageType_MESSAE_ATTACK              MessageType = 7
+	MessageType_MESSAGE_ATTACK             MessageType = 7
 )
 
 // Enum value maps for MessageType.
@@ -45,7 +45,7 @@ var (
 		4: "MESSAGE_JOIN_GAME_RESPONSE",
 		5: "MESSAGE_SPAWN",
 		6: "MESSAGE_UPDATE",
-		7: "MESSAE_ATTACK",
+		7: "MESSAGE_ATTACK",
 	}
 	MessageType_value = map[string]int32{
 		"MESSAGE_TYPE_UNSPECIFIED":   0,
@@ -55,7 +55,7 @@ var (
 		"MESSAGE_JOIN_GAME_RESPONSE": 4,
 		"MESSAGE_SPAWN":              5,
 		"MESSAGE_UPDATE":             6,
-		"MESSAE_ATTACK":              7,
+		"MESSAGE_ATTACK":             7,
 	}
 )
 
@@ -636,7 +636,7 @@ const file_messages_v1_messages_proto_rawDesc = "" +
 	"\tplayer_id\x18\x01 \x01(\tR\bplayerId\x12\x17\n" +
 	"\atile_id\x18\x02 \x01(\x05R\x06tileId\x12\x1f\n" +
 	"\vtroop_count\x18\x03 \x01(\x05R\n" +
-	"troopCount*\xd1\x01\n" +
+	"troopCount*\xd2\x01\n" +
 	"\vMessageType\x12\x1c\n" +
 	"\x18MESSAGE_TYPE_UNSPECIFIED\x10\x00\x12\x1b\n" +
 	"\x17MESSAGE_START_COUNTDOWN\x10\x01\x12\x16\n" +
@@ -644,8 +644,8 @@ const file_messages_v1_messages_proto_rawDesc = "" +
 	"\x11MESSAGE_JOIN_GAME\x10\x03\x12\x1e\n" +
 	"\x1aMESSAGE_JOIN_GAME_RESPONSE\x10\x04\x12\x11\n" +
 	"\rMESSAGE_SPAWN\x10\x05\x12\x12\n" +
-	"\x0eMESSAGE_UPDATE\x10\x06\x12\x11\n" +
-	"\rMESSAE_ATTACK\x10\aB3Z1github.com/tobyrushton/globalfront/pb/messages/v1b\x06proto3"
+	"\x0eMESSAGE_UPDATE\x10\x06\x12\x12\n" +
+	"\x0eMESSAGE_ATTACK\x10\aB3Z1github.com/tobyrushton/globalfront/pb/messages/v1b\x06proto3"
 
 var (
 	file_messages_v1_messages_proto_rawDescOnce sync.Once

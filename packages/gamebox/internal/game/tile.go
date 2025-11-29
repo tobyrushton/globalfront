@@ -6,7 +6,9 @@ type Tile struct {
 }
 
 func NewTile() *Tile {
-	return &Tile{}
+	return &Tile{
+		playerId: "0",
+	}
 }
 
 func (t *Tile) PlayerId() string {

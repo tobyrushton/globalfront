@@ -1,6 +1,11 @@
 package game
 
-import "sync"
+import (
+	"math"
+	"sync"
+
+	v1 "github.com/tobyrushton/globalfront/pb/game/v1"
+)
 
 type Attack struct {
 	troopCount int32
@@ -12,13 +17,19 @@ type AttackManager struct {
 	attacks   map[string]map[string]*Attack
 	attacksMu sync.Mutex
 
-	board *Board
+	board   *Board
+	players *map[string]*v1.Player
+
+	// attacking exponential constant
+	k float64
 }
 
-func NewAttackManager(board *Board) *AttackManager {
+func NewAttackManager(board *Board, players *map[string]*v1.Player) *AttackManager {
 	return &AttackManager{
 		board:   board,
 		attacks: make(map[string]map[string]*Attack),
+		players: players,
+		k:       1.5,
 	}
 }
 
@@ -66,4 +77,47 @@ func (am *AttackManager) startAttack(playerFrom, playerTo string, troopCount int
 		}
 	}
 	am.attacks[playerFrom][playerTo].troopCount += troopCount
+}
+
+func (am *AttackManager) CalculateAttacks() {
+	am.attacksMu.Lock()
+	defer am.attacksMu.Unlock()
+
+	for playerFrom, attacks := range am.attacks {
+		for playerTo, attack := range attacks {
+			defendingTroops := int32(0)
+			// as wilderness won't have any troops
+			if defender, exists := (*am.players)[playerTo]; exists {
+				defendingTroops = defender.TroopCount
+			}
+
+			captured, remainingAttackers, _ := am.calculateAdvance(defendingTroops, attack.troopCount, int32(len(attack.border)))
+			// update troop counts
+			if remainingAttackers == 0 {
+				delete(am.attacks[playerFrom], playerTo)
+			} else {
+				attack.troopCount = remainingAttackers
+			}
+			am.board.AdvancePlayer(attack.border, playerFrom, playerTo, captured)
+		}
+	}
+}
+
+func (am *AttackManager) calculateAdvance(defendingTroops, attackingTroops, borderLength int32) (int32, int32, int32) {
+	a := math.Pow(float64(attackingTroops), am.k)
+	d := math.Pow(float64(defendingTroops), am.k)
+	ratio := a / (a + d)
+
+	captured := int32(ratio * float64(borderLength))
+
+	if captured > borderLength {
+		captured = borderLength
+	}
+
+	frac := float64(captured) / float64(borderLength)
+
+	remainingAttackers := int32(float64(attackingTroops) * (1 - frac))
+	remainingDefenders := int32(float64(defendingTroops) * (1 - frac))
+
+	return captured, remainingAttackers, remainingDefenders
 }

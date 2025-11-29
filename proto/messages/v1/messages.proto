@@ -28,7 +28,7 @@ enum MessageType {
     MESSAGE_JOIN_GAME_RESPONSE = 4;
     MESSAGE_SPAWN = 5;
     MESSAGE_UPDATE = 6;
-    MESSAE_ATTACK = 7;
+    MESSAGE_ATTACK = 7;
 }
 
 message StartCountdown {

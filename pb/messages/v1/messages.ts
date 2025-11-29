@@ -185,9 +185,9 @@ export enum MessageType {
      */
     MESSAGE_UPDATE = 6,
     /**
-     * @generated from protobuf enum value: MESSAE_ATTACK = 7;
+     * @generated from protobuf enum value: MESSAGE_ATTACK = 7;
      */
-    MESSAE_ATTACK = 7
+    MESSAGE_ATTACK = 7
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class WebsocketMessage$Type extends MessageType$<WebsocketMessage> {

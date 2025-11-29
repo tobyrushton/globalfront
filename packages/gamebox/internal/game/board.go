@@ -7,6 +7,8 @@ import (
 	v1 "github.com/tobyrushton/globalfront/pb/game/v1"
 )
 
+var dirs = [][2]int{{0, 1}, {1, 0}, {0, -1}, {-1, 0}}
+
 const (
 	spawnRadius = 4
 )
@@ -132,7 +134,6 @@ func (b *Board) FindBorder(player1, player2 string, start int32) []int32 {
 	borderTiles := make([]int32, 0)
 
 	// complete a dfs in order to find the border cells
-	dirs := [][2]int{{0, 1}, {1, 0}, {0, -1}, {-1, 0}}
 	visited := make(map[int32]struct{})
 	x, y := CoordinatesFromTileId(start)
 	s := [][2]int{{x, y}}
@@ -152,6 +153,9 @@ func (b *Board) FindBorder(player1, player2 string, start int32) []int32 {
 				ny < width {
 				visited[nid] = struct{}{}
 				ntile := b.tiles[nx][ny]
+				if ntile.PlayerId() == player1 {
+					s = append(s, [2]int{nx, ny})
+				}
 				if ntile.PlayerId() == player2 {
 					borderTiles = append(borderTiles, nid)
 				}
@@ -160,6 +164,38 @@ func (b *Board) FindBorder(player1, player2 string, start int32) []int32 {
 	}
 
 	return borderTiles
+}
+
+func (b *Board) AdvancePlayer(border []int32, attackerId, defenderId string, count int32) []int32 {
+	b.tilesMu.Lock()
+	defer b.tilesMu.Unlock()
+
+	updatedBorder := make([]int32, 0)
+
+	for i, tileId := range border {
+		if count == 0 {
+			updatedBorder = append(updatedBorder, border[i:]...)
+			break
+		}
+
+		x, y := CoordinatesFromTileId(tileId)
+
+		for _, dir := range dirs {
+			nx, ny := x+dir[0], y+dir[1]
+			nid := TileId(nx, ny)
+
+			if nx >= 0 && ny >= 0 && nx < b.width && ny < b.height {
+				ntile := b.tiles[nx][ny]
+				if ntile.PlayerId() == defenderId && count > 0 {
+					ntile.SetPlayerId(attackerId)
+					count--
+					updatedBorder = append(updatedBorder, nid)
+				}
+			}
+		}
+	}
+
+	return updatedBorder
 }
 
 func TileId(x, y int) int32 {

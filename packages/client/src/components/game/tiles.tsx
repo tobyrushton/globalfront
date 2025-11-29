@@ -27,7 +27,7 @@ export const GameTiles: FC = () => {
             }))
         } else {
             send(WebsocketMessage.create({
-                type: MessageType.MESSAE_ATTACK,
+                type: MessageType.MESSAGE_ATTACK,
                 payload: {
                     oneofKind: "attack",
                     attack: {

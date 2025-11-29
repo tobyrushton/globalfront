@@ -48,7 +48,7 @@ func New(port int, game *pb.Game, players []string) *Game {
 	msgChan := make(chan *v1.WebsocketMessage, 100)
 
 	board := NewBoard()
-	am := NewAttackManager(board)
+	am := NewAttackManager(board, &playerMap)
 
 	return &Game{
 		ctx:      context.TODO(),
@@ -94,7 +94,7 @@ func (g *Game) GetPort() int {
 }
 
 func (g *Game) startGame() {
-	for i := 30; i >= 1; i-- {
+	for i := 5; i >= 1; i-- {
 		g.wsServer.Broadcast(&v1.WebsocketMessage{
 			Type: v1.MessageType_MESSAGE_START_COUNTDOWN,
 			Payload: &v1.WebsocketMessage_StartCountdown{
@@ -124,7 +124,7 @@ func (g *Game) handleMsg(msg *v1.WebsocketMessage) {
 	case *v1.WebsocketMessage_Attack:
 		g.handleAttack(p.Attack.PlayerId, p.Attack.TileId, p.Attack.TroopCount)
 	default:
-		fmt.Println("Unhandled message type:", msg.Type)
+		fmt.Println("Unhandled message type:", msg.Type, p)
 	}
 }
 
@@ -184,6 +184,7 @@ func (g *Game) updateLoop() {
 					msg.GetUpdate().TroopCountChanges = troopUpdates
 					send = true
 				}
+				g.am.CalculateAttacks()
 			}
 			if send {
 				g.wsServer.Broadcast(msg)
