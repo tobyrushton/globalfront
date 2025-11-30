@@ -48,7 +48,19 @@ func NewGameManager(ctx context.Context, gf *gamefactory.GameFactory) *GameManag
 	go func() {
 		for game := range gf.GetGameChannel() {
 			if gm.currentGame != nil && gm.currentGame.PlayerCount > 1 {
-				gm.startGame()
+				if _, started := gm.games[gm.currentGame.Id]; !started {
+					err := gm.startGame()
+					if err != nil {
+						gm.playerMu.Lock()
+						for _, ch := range gm.players {
+							ch <- Update{
+								GameId: "",
+								Err:    err,
+							}
+						}
+						gm.playerMu.Unlock()
+					}
+				}
 			}
 			gm.gamesMu.Lock()
 			if gm.currentGame != nil && gm.currentGame.PlayerCount == 1 {
@@ -92,7 +104,21 @@ func (gm *GameManager) JoinGame() (string, error) {
 
 	gm.gamesMu.Unlock()
 	if gm.currentGame.PlayerCount == gm.currentGame.MaxPlayers {
-		go gm.startGame()
+		go func() {
+			err := gm.startGame()
+			if err != nil {
+				gm.playerMu.Lock()
+				for _, ch := range gm.players {
+					ch <- Update{
+						GameId: "",
+						Err:    err,
+					}
+				}
+				gm.playerMu.Unlock()
+			}
+			fmt.Println("Requesting new game to be generated")
+			gm.gf.GetNewGameChannel() <- struct{}{}
+		}()
 	}
 
 	return playerID, nil

@@ -1,6 +1,7 @@
 package gamefactory
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -26,7 +27,7 @@ func New(newGameDelay int) *GameFactory {
 func (gf *GameFactory) createGame() {
 	id := uuid.New().String()
 	currentPlayers := int32(0)
-	maxPlayers := int32(1)
+	maxPlayers := int32(2)
 	game := &pb.Game{
 		Id:          id,
 		PlayerCount: currentPlayers,
@@ -38,6 +39,7 @@ func (gf *GameFactory) createGame() {
 
 func (gf *GameFactory) createGameLoop() {
 	for {
+		fmt.Println("Creating new game...")
 		gf.createGame()
 
 		timer := time.NewTimer(time.Duration(gf.newGameDelay) * time.Second)
